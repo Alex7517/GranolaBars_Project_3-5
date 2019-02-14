@@ -24,7 +24,6 @@ public class MaintenanceFrame extends JFrame{
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(null);
         
