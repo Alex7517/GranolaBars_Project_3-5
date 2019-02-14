@@ -1,6 +1,7 @@
 package com.granolaBars;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
     //MainFrames default settings
@@ -10,12 +11,14 @@ public class MainFrame extends JFrame {
     public MainFrame(){
         //Setting up its personal settings
         setTitle(frameTitle);
+        setLayout(null);
         setSize(frameWidth,frameHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
         //Creating a textField for the search bar
-        MainFrameSearchBarTextField searchBarTextField = new MainFrameSearchBarTextField();
+        TextField  searchBarTextField = new TextField ();
+        searchBarTextField.setBounds(1,2,100,20);
         add(searchBarTextField);
     }
 }
