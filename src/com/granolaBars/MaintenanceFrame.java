@@ -19,15 +19,19 @@ public class MaintenanceFrame extends JFrame{
         setSize(frameWidth,frameHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        setLayout(null);
+
         
         //This is the header on top
         MaintenanceFormHeader = new JLabel("Granola Bar - Maintenance");
-        MaintenanceFormHeader.setHorizontalAlignment(JLabel.CENTER);
-        MaintenanceFormHeader.setVerticalAlignment(JLabel.TOP);
+        MaintenanceFormHeader.setLocation(175, 0);
+        MaintenanceFormHeader.setSize(500, 50);
         MaintenanceFormHeader.setFont(new Font("Calibri", Font.BOLD, 30));
         add(MaintenanceFormHeader);
        
-        AddFileButton = new JButton("Add File");
+        AddFileButton = new JButton("Add File");   
+        AddFileButton.setSize(100, 30);
+        AddFileButton.setLocation(75, 375);
         add(AddFileButton);
    
     
