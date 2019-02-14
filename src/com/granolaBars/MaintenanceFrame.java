@@ -28,10 +28,11 @@ public class MaintenanceFrame extends JFrame{
         setResizable(false);
         setLayout(null);
         
+        //Text area where file information will show
          FileTextArea = new TextArea("", 24, 80);
          FileTextArea.setFont(new Font("Calibri", Font.PLAIN, 12));
          FileTextArea.setLocation(15, 70);
-        FileTextArea.setSize(675, 310);
+         FileTextArea.setSize(675, 310);
          FileTextArea.setEditable(false);
          add(FileTextArea);
 
