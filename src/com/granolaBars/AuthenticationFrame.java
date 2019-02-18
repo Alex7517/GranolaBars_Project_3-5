@@ -12,48 +12,56 @@ public class AuthenticationFrame extends JFrame {
      * When called this will self create the AuthenticationFrame's standard settings
      */
     private String frameTitle = "";
-    private int frameWidth = 200;
-    private int frameHeight = 300;
+    private int frameWidth = 250, frameHeight = 200;
 
-    private JLabel authenticationFrameWelcomeLabel;
-    private JTextField authenticationFrameUserIDTextField;
-    private JLabel authenticationFrameUserIDLabel;
-    private JTextField authenticationFramePasswordTextField;
-    private JLabel authenticationFramePasswordLabel;
-    private JButton authenticationFrameConfirmButton;
-    private JButton authenticationFrameReturnButton;
-
-    private LayoutManager authenticationFrameLayoutManager = new BorderLayout();
+    private Box centerPanel = Box.createVerticalBox();
+    private JLabel authenticationFrameWelcomeLabel, authenticationFrameUserIDLabel, authenticationFramePasswordLabel;
+    private JTextField authenticationFrameUserIDTextField, authenticationFramePasswordTextField;
+    private JPanel southPanel;
+    private JButton authenticationFrameConfirmButton, authenticationFrameCancelButton;
 
 
     public AuthenticationFrame(){
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
-        setLayout(authenticationFrameLayoutManager);
-        setResizable(false);
+        setLayout(new BorderLayout());
+        setResizable(true);
 
         //Create the Welcome Label
         authenticationFrameWelcomeLabel = new JLabel("Please Enter a UserID and Password");
-        authenticationFrameWelcomeLabel.setBounds(10,0,100,50);
-        authenticationFrameWelcomeLabel.setFont(new Font("Calibri", Font.BOLD, 11));
+        authenticationFrameWelcomeLabel.setPreferredSize(new Dimension(150,20));
+        authenticationFrameWelcomeLabel.setFont(new Font("Calibri", Font.BOLD, 14));
         add(authenticationFrameWelcomeLabel,BorderLayout.NORTH);
 
-        //Create the UserID text Field and label
+        //Create input labels and textFields
         authenticationFrameUserIDLabel = new JLabel("UserID");
-        authenticationFrameUserIDLabel.setBounds(10,40,100,50);
-        authenticationFrameUserIDLabel.setFont(new Font("Calibri", Font.BOLD, 9));
-        add(authenticationFrameUserIDLabel, BorderLayout.CENTER);
-
+        authenticationFrameUserIDLabel.setFont(new Font("Calibri", Font.BOLD, 11));
         authenticationFrameUserIDTextField = new JTextField();
-        authenticationFrameUserIDTextField.setBounds(20,80,100,10);
-        authenticationFrameUserIDTextField.setFont(new Font("Calibri", Font.BOLD, 9));
-        add(authenticationFrameUserIDTextField, BorderLayout.CENTER);
+        authenticationFrameUserIDTextField.setPreferredSize(new Dimension(150,30));
 
-        //Create the Password text Field and label
+        authenticationFramePasswordLabel = new JLabel("Password");
+        authenticationFramePasswordLabel.setFont(new Font("Calibri", Font.BOLD, 11));
+        authenticationFramePasswordTextField = new JTextField();
+        authenticationFramePasswordTextField.setPreferredSize(new Dimension(150,30));
 
-        //Create the Confirm Button
+        //Create a Center box for input labels and textFields
+        centerPanel = Box.createVerticalBox();
+        centerPanel.add(authenticationFrameUserIDLabel);
+        centerPanel.add(authenticationFrameUserIDTextField);
+        centerPanel.add(authenticationFramePasswordLabel);
+        centerPanel.add(authenticationFramePasswordTextField);
+        add(centerPanel, BorderLayout.WEST); //This is set to west instead of center to have a left lean for textFields
 
-        //Create the return/go back button
+        //Create Confirm and Cancel Buttons
+        authenticationFrameConfirmButton = new JButton("Confirm");
+
+        authenticationFrameCancelButton = new JButton("Cancel");
+
+        //Create a South Panel for Buttons
+        southPanel = new JPanel();
+        southPanel.add(authenticationFrameConfirmButton,BorderLayout.WEST);
+        southPanel.add(authenticationFrameCancelButton,BorderLayout.EAST);
+        add(southPanel,BorderLayout.SOUTH);
 
     }
 
