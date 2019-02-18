@@ -80,7 +80,6 @@ public class MainFrame extends JFrame {
         maintenanceButton = new JButton("Maintenance");
         maintenanceButton.setPreferredSize(buttonDimension);
         maintenanceButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
                 if (!MaintenanceFrameOpen) {
