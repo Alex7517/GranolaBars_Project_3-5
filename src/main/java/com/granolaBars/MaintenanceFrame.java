@@ -20,7 +20,7 @@ public class MaintenanceFrame extends JFrame{
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
-      public MaintenanceFrame(MainFrame mainFrame){
+      public MaintenanceFrame(final MainFrame mainFrame){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);

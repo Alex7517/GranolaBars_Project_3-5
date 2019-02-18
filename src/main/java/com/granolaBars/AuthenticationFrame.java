@@ -60,7 +60,6 @@ public class AuthenticationFrame extends JFrame {
         //Create Confirm and Cancel Buttons
         authenticationFrameConfirmButton = new JButton("Confirm");
         authenticationFrameConfirmButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 //The Logic for testing the UserID and PW will be here
                 MaintenanceFrame maintenanceFrame = new MaintenanceFrame(mainFrame);
@@ -72,7 +71,6 @@ public class AuthenticationFrame extends JFrame {
 
         authenticationFrameCancelButton = new JButton("Cancel");
         authenticationFrameCancelButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 dispatchEvent(new java.awt.event.WindowEvent(myself,java.awt.event.WindowEvent.WINDOW_CLOSING));
                 setVisible(false);
