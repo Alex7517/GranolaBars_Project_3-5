@@ -20,6 +20,9 @@ public class MainFrame extends JFrame {
     private JTable searchResult;
     private JScrollPane searchScrollPane;
     private int rows, columns;
+    //Others dont know the mainFrame object, so this is passed to other JOptions (This will likely be swapped with a global elsewhere)
+    MainFrame myself = this;
+    public boolean MaintenanceFrameOpen = false;
 
     public MainFrame(){
         //Setting up its personal settings
@@ -79,8 +82,12 @@ public class MainFrame extends JFrame {
         maintenanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MaintenanceFrame mf = new MaintenanceFrame();
-                mf.setVisible(true);
+                //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
+                if (!MaintenanceFrameOpen) {
+                    AuthenticationFrame authenticationFrame = new AuthenticationFrame(myself);
+                    authenticationFrame.setVisible(true);
+                    MaintenanceFrameOpen = true;
+                }
             }
         });
 

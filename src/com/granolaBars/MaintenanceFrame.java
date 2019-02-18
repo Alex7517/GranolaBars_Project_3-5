@@ -20,12 +20,13 @@ public class MaintenanceFrame extends JFrame{
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
-      public MaintenanceFrame(){
+      public MaintenanceFrame(MainFrame mainFrame){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
         setResizable(false);
         setLayout(null);
+        setAlwaysOnTop(true);
         
         //Text area where file information will show
          FileTextArea = new TextArea("", 24, 80);
@@ -83,5 +84,12 @@ public class MaintenanceFrame extends JFrame{
         ResetWindowsButton.setSize(125, 30);
         ResetWindowsButton.setLocation(10, 425);
         add(ResetWindowsButton);
-}
+
+        //Add a WindowListener to manage closing the frame
+        addWindowListener(new java.awt.event.WindowAdapter(){
+            public void windowClosing(java.awt.event.WindowEvent winEvt) {
+                mainFrame.MaintenanceFrameOpen = false;
+            }
+        });
+    }
 }
