@@ -15,10 +15,11 @@ public class MainFrame extends JFrame {
     private JPanel panel, panel2;
     private JLabel label, label2;
     private JButton searchButton, maintenanceButton;
-    private JRadioButton radioButton, radioButton1, radioButton2;
+    private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
     private JTextField  searchBarTextField;
     private JTable searchResult;
     private JScrollPane searchScrollPane;
+    private ButtonGroup buttonGroup;
     private int rows, columns;
     //Others dont know the mainFrame object, so this is passed to other JOptions (This will likely be swapped with a global elsewhere)
     MainFrame myself = this;
@@ -63,32 +64,35 @@ public class MainFrame extends JFrame {
             }
         });
 
-        radioButton = new JRadioButton("match all");
-        radioButton.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButton.addActionListener(new ActionListener() {
+        radioButtonMAll = new JRadioButton("match all");
+        radioButtonMAll.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchAll();
             }
         });
 
-        radioButton1 = new JRadioButton("match any");
-        radioButton1.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButton1.addActionListener(new ActionListener() {
+        radioButtonMAny = new JRadioButton("match any");
+        radioButtonMAny.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAny.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchAny();
             }
         });
 
-        radioButton2 = new JRadioButton("match exactly");
-        radioButton2.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButton2.addActionListener(new ActionListener() {
+        radioButtonMExactly = new JRadioButton("match exactly");
+        radioButtonMExactly.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMExactly.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchExactly();
             }
         });
 
-        // buttonGroup = new ButtonGroup();
-        // will need to be added later
+        //Add Radio Button Group
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonMAll);
+        buttonGroup.add(radioButtonMAny);
+        buttonGroup.add(radioButtonMExactly);
 
         // rows, columns, table and scrollable pane to view search result
         rows = 36;
@@ -142,13 +146,13 @@ public class MainFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(radioButton, gbc);
+        panel.add(radioButtonMAll, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(radioButton1, gbc);
+        panel.add(radioButtonMAny, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        panel.add(radioButton2, gbc);
+        panel.add(radioButtonMExactly, gbc);
 
         // This panel contains the search results, scroll pane and maintenance button
         add(panel2,BorderLayout.SOUTH);
@@ -177,14 +181,14 @@ public class MainFrame extends JFrame {
     }
 
     private void doMatchAll() {
-        System.out.println(radioButton.getText() + " button pressed");
+        System.out.println(radioButtonMAll.getText() + " button pressed");
     }
 
     private void doMatchAny() {
-        System.out.println(radioButton1.getText() + " button pressed");
+        System.out.println(radioButtonMAny.getText() + " button pressed");
     }
 
     private void doMatchExactly() {
-        System.out.println(radioButton2.getText() + " button pressed");
+        System.out.println(radioButtonMExactly.getText() + " button pressed");
     }
 }
