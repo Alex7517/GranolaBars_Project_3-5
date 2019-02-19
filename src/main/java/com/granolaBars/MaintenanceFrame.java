@@ -22,7 +22,7 @@ public class MaintenanceFrame extends JFrame{
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
-      public MaintenanceFrame(final MainFrame mainFrame){
+    public MaintenanceFrame(final MainFrame mainFrame){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
@@ -52,14 +52,14 @@ public class MaintenanceFrame extends JFrame{
         add(StatusLabel);
        
         //Add file button
-        AddFileButton = new JButton("Add File");  
+        AddFileButton = new JButton("Add File");
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
         add(AddFileButton);
    
         //Add rebuild button
-        RebuildButton = new JButton("Rebuild Out-Of-Date");  
+        RebuildButton = new JButton("Rebuild Out-Of-Date");
         RebuildButton.setMnemonic(KeyEvent.VK_O);
         RebuildButton.setSize(150, 30);
         RebuildButton.setLocation(250, 390);
@@ -73,7 +73,7 @@ public class MaintenanceFrame extends JFrame{
         add(RemoveSelectedFilesButton);
     
         //Add reset windows button
-        ResetWindowsButton = new JButton("Reset Windows");   
+        ResetWindowsButton = new JButton("Reset Windows");
         ResetWindowsButton.setMnemonic(KeyEvent.VK_W);
         ResetWindowsButton.setSize(125, 30);
         ResetWindowsButton.setLocation(10, 425);

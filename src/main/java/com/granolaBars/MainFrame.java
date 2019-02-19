@@ -20,7 +20,8 @@ public class MainFrame extends JFrame {
     private JTable searchResult;
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
-    private int rows, columns;
+    private String[] columnsNames = {"File", "Status"};
+
     //Others dont know the mainFrame object, so this is passed to other JOptions (This will likely be swapped with a global elsewhere)
     MainFrame myself = this;
     public boolean MaintenanceFrameOpen = false;
@@ -94,10 +95,14 @@ public class MainFrame extends JFrame {
         buttonGroup.add(radioButtonMAny);
         buttonGroup.add(radioButtonMExactly);
 
+
         // rows, columns, table and scrollable pane to view search result
-        rows = 36;
-        columns = 8;
-        searchResult = new JTable(rows,columns);
+        //This DATA is just a stub at this time
+        Object[][] data = {
+                {"ReadMe.txt", "Pending"}
+        };
+
+        searchResult = new JTable(data,columnsNames);
         searchScrollPane = new JScrollPane(searchResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         searchScrollPane.setPreferredSize(new Dimension(550,450));
         //searchResult.pack(searchScrollPane);
