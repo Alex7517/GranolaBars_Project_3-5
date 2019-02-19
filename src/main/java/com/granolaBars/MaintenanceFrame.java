@@ -17,7 +17,7 @@ public class MaintenanceFrame extends JFrame{
      private JButton RebuildButton;
      private JButton RemoveSelectedFilesButton;
      private JButton ResetWindowsButton;
-     private TextArea FileTextArea;
+     private JTable FileNameAndStatus;
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
@@ -29,14 +29,6 @@ public class MaintenanceFrame extends JFrame{
         setResizable(false);
         setLayout(null);
         setAlwaysOnTop(true);
-        
-        //Text area where file information will show
-         FileTextArea = new TextArea("", 24, 80);
-         FileTextArea.setFont(new Font("Calibri", Font.PLAIN, 12));
-         FileTextArea.setLocation(15, 70);
-         FileTextArea.setSize(675, 310);
-         FileTextArea.setEditable(false);
-         add(FileTextArea);
 
         //This is the header on top
         MaintenanceFormHeader = new JLabel("Granola Bar - Maintenance");
@@ -86,6 +78,19 @@ public class MaintenanceFrame extends JFrame{
         ResetWindowsButton.setSize(125, 30);
         ResetWindowsButton.setLocation(10, 425);
         add(ResetWindowsButton);
+        
+        //Table to store data
+        String[] columnsNames = {"File", "Status"};
+
+        Object[][] data = {
+            {"ReadMe.txt", "Pending"}
+        };
+
+        JTable FileNameAndStatus = new JTable(data, columnsNames);
+        FileNameAndStatus.setLocation(15, 70);
+        FileNameAndStatus.setSize(675, 310);
+        add(FileNameAndStatus);
+        FileNameAndStatus.setEnabled(false);
 
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
