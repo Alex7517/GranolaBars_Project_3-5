@@ -15,11 +15,13 @@ public class MainFrame extends JFrame {
     private JPanel panel, panel2;
     private JLabel label, label2;
     private JButton searchButton, maintenanceButton;
-    private JRadioButton radioButton, radioButton1, radioButton2;
+    private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
     private JTextField  searchBarTextField;
     private JTable searchResult;
     private JScrollPane searchScrollPane;
-    private int rows, columns;
+    private ButtonGroup buttonGroup;
+    private String[] columnsNames = {"File", "Status"};
+
     //Others dont know the mainFrame object, so this is passed to other JOptions (This will likely be swapped with a global elsewhere)
     MainFrame myself = this;
     public boolean MaintenanceFrameOpen = false;
@@ -57,21 +59,50 @@ public class MainFrame extends JFrame {
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
         searchButton.setPreferredSize(buttonDimension);
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doSearch();
+            }
+        });
 
-        radioButton = new JRadioButton("match all");
-        radioButton.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButton1 = new JRadioButton("match any");
-        radioButton1.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButton2 = new JRadioButton("match exactly");
-        radioButton2.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAll = new JRadioButton("match all");
+        radioButtonMAll.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchAll();
+            }
+        });
 
-        // buttonGroup = new ButtonGroup();
-        // will need to be added later
+        radioButtonMAny = new JRadioButton("match any");
+        radioButtonMAny.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAny.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchAny();
+            }
+        });
+
+        radioButtonMExactly = new JRadioButton("match exactly");
+        radioButtonMExactly.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMExactly.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchExactly();
+            }
+        });
+
+        //Add Radio Button Group
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonMAll);
+        buttonGroup.add(radioButtonMAny);
+        buttonGroup.add(radioButtonMExactly);
+
 
         // rows, columns, table and scrollable pane to view search result
-        rows = 36;
-        columns = 8;
-        searchResult = new JTable(rows,columns);
+        //This DATA is just a stub at this time
+        Object[][] data = {
+                {"ReadMe.txt", "Pending"}
+        };
+
+        searchResult = new JTable(data,columnsNames);
         searchScrollPane = new JScrollPane(searchResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         searchScrollPane.setPreferredSize(new Dimension(550,450));
         //searchResult.pack(searchScrollPane);
@@ -120,13 +151,13 @@ public class MainFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(radioButton, gbc);
+        panel.add(radioButtonMAll, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(radioButton1, gbc);
+        panel.add(radioButtonMAny, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        panel.add(radioButton2, gbc);
+        panel.add(radioButtonMExactly, gbc);
 
         // This panel contains the search results, scroll pane and maintenance button
         add(panel2,BorderLayout.SOUTH);
@@ -148,5 +179,21 @@ public class MainFrame extends JFrame {
         panel2.add(searchScrollPane, gc);
 
         // Need to make an about tab & page
+    }
+
+    private void doSearch() {
+        System.out.println(searchButton.getText() + " button pressed");
+    }
+
+    private void doMatchAll() {
+        System.out.println(radioButtonMAll.getText() + " button pressed");
+    }
+
+    private void doMatchAny() {
+        System.out.println(radioButtonMAny.getText() + " button pressed");
+    }
+
+    private void doMatchExactly() {
+        System.out.println(radioButtonMExactly.getText() + " button pressed");
     }
 }

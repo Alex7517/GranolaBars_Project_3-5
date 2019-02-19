@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.TextArea;
 
@@ -15,26 +17,18 @@ public class MaintenanceFrame extends JFrame{
      private JButton RebuildButton;
      private JButton RemoveSelectedFilesButton;
      private JButton ResetWindowsButton;
-     private TextArea FileTextArea;
+     private JTable FileNameAndStatus;
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
-      public MaintenanceFrame(final MainFrame mainFrame){
+    public MaintenanceFrame(final MainFrame mainFrame){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
         setResizable(false);
         setLayout(null);
         setAlwaysOnTop(true);
-        
-        //Text area where file information will show
-         FileTextArea = new TextArea("", 24, 80);
-         FileTextArea.setFont(new Font("Calibri", Font.PLAIN, 12));
-         FileTextArea.setLocation(15, 70);
-         FileTextArea.setSize(675, 310);
-         FileTextArea.setEditable(false);
-         add(FileTextArea);
 
         //This is the header on top
         MaintenanceFormHeader = new JLabel("Granola Bar - Maintenance");
@@ -58,14 +52,14 @@ public class MaintenanceFrame extends JFrame{
         add(StatusLabel);
        
         //Add file button
-        AddFileButton = new JButton("Add File");  
+        AddFileButton = new JButton("Add File");
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
         add(AddFileButton);
    
         //Add rebuild button
-        RebuildButton = new JButton("Rebuild Out-Of-Date");  
+        RebuildButton = new JButton("Rebuild Out-Of-Date");
         RebuildButton.setMnemonic(KeyEvent.VK_O);
         RebuildButton.setSize(150, 30);
         RebuildButton.setLocation(250, 390);
@@ -79,11 +73,24 @@ public class MaintenanceFrame extends JFrame{
         add(RemoveSelectedFilesButton);
     
         //Add reset windows button
-        ResetWindowsButton = new JButton("Reset Windows");   
+        ResetWindowsButton = new JButton("Reset Windows");
         ResetWindowsButton.setMnemonic(KeyEvent.VK_W);
         ResetWindowsButton.setSize(125, 30);
         ResetWindowsButton.setLocation(10, 425);
         add(ResetWindowsButton);
+        
+        //Table to store data
+        String[] columnsNames = {"File", "Status"};
+
+        Object[][] data = {
+            {"ReadMe.txt", "Pending"}
+        };
+
+        JTable FileNameAndStatus = new JTable(data, columnsNames);
+        FileNameAndStatus.setLocation(15, 70);
+        FileNameAndStatus.setSize(675, 310);
+        add(FileNameAndStatus);
+        FileNameAndStatus.setEnabled(false);
 
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
@@ -91,5 +98,47 @@ public class MaintenanceFrame extends JFrame{
                 mainFrame.MaintenanceFrameOpen = false;
             }
         });
+
+        // Adding action listeners for buttons
+
+        AddFileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doAddFile();
+            }
+        });
+
+        RebuildButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doRebuild();
+            }
+        });
+
+        RemoveSelectedFilesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doRemoveSelected();
+            }
+        });
+
+        ResetWindowsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doReset();
+            }
+        });
+    }
+
+    private void doAddFile() {
+        System.out.println(AddFileButton.getText() + " button pressed");
+    }
+
+    private void doRebuild() {
+        System.out.println(RebuildButton.getText() + " button pressed");
+    }
+
+    private void doRemoveSelected() {
+        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+    }
+
+    private void doReset() {
+        System.out.println(ResetWindowsButton.getText() + " button pressed");
     }
 }
