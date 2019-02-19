@@ -98,26 +98,42 @@ public class MaintenanceFrame extends JFrame{
 
         AddFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(AddFileButton.getText() + " button pressed");
+                doAddFile();
             }
         });
 
         RebuildButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(RebuildButton.getText() + " button pressed");
+                doRebuild();
             }
         });
 
         RemoveSelectedFilesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+                doRemoveSelected();
             }
         });
 
         ResetWindowsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(ResetWindowsButton.getText() + " button pressed");
+                doReset();
             }
         });
+    }
+
+    public void doAddFile() {
+        System.out.println(AddFileButton.getText() + " button pressed");
+    }
+
+    public void doRebuild() {
+        System.out.println(RebuildButton.getText() + " button pressed");
+    }
+
+    public void doRemoveSelected() {
+        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+    }
+
+    public void doReset() {
+        System.out.println(ResetWindowsButton.getText() + " button pressed");
     }
 }

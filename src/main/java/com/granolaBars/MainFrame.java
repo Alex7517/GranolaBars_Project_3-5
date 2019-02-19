@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
         searchButton.setPreferredSize(buttonDimension);
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(searchButton.getText() + " button pressed");
+                doSearch();
             }
         });
 
@@ -67,7 +67,7 @@ public class MainFrame extends JFrame {
         radioButton.setFont(new Font("Calibri", Font.BOLD, 14));
         radioButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(radioButton.getText() + " button pressed");
+                doMatchAll();
             }
         });
 
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
         radioButton1.setFont(new Font("Calibri", Font.BOLD, 14));
         radioButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(radioButton1.getText() + " button pressed");
+                doMatchAny();
             }
         });
 
@@ -83,7 +83,7 @@ public class MainFrame extends JFrame {
         radioButton2.setFont(new Font("Calibri", Font.BOLD, 14));
         radioButton2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(radioButton2.getText() + " button pressed");
+                doMatchExactly();
             }
         });
 
@@ -170,5 +170,21 @@ public class MainFrame extends JFrame {
         panel2.add(searchScrollPane, gc);
 
         // Need to make an about tab & page
+    }
+
+    public void doSearch() {
+        System.out.println(searchButton.getText() + " button pressed");
+    }
+
+    public void doMatchAll() {
+        System.out.println(radioButton.getText() + " button pressed");
+    }
+
+    public void doMatchAny() {
+        System.out.println(radioButton1.getText() + " button pressed");
+    }
+
+    public void doMatchExactly() {
+        System.out.println(radioButton2.getText() + " button pressed");
     }
 }
