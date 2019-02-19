@@ -57,13 +57,35 @@ public class MainFrame extends JFrame {
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
         searchButton.setPreferredSize(buttonDimension);
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(searchButton.getText() + " pressed");
+            }
+        });
 
         radioButton = new JRadioButton("match all");
         radioButton.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(radioButton.getText() + " button pressed");
+            }
+        });
+
         radioButton1 = new JRadioButton("match any");
         radioButton1.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(radioButton1.getText() + " button pressed");
+            }
+        });
+
         radioButton2 = new JRadioButton("match exactly");
         radioButton2.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(radioButton2.getText() + " button pressed");
+            }
+        });
 
         // buttonGroup = new ButtonGroup();
         // will need to be added later
