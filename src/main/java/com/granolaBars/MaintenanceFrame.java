@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.TextArea;
 
@@ -91,5 +93,47 @@ public class MaintenanceFrame extends JFrame{
                 mainFrame.MaintenanceFrameOpen = false;
             }
         });
+
+        // Adding action listeners for buttons
+
+        AddFileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doAddFile();
+            }
+        });
+
+        RebuildButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doRebuild();
+            }
+        });
+
+        RemoveSelectedFilesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doRemoveSelected();
+            }
+        });
+
+        ResetWindowsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doReset();
+            }
+        });
+    }
+
+    private void doAddFile() {
+        System.out.println(AddFileButton.getText() + " button pressed");
+    }
+
+    private void doRebuild() {
+        System.out.println(RebuildButton.getText() + " button pressed");
+    }
+
+    private void doRemoveSelected() {
+        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+    }
+
+    private void doReset() {
+        System.out.println(ResetWindowsButton.getText() + " button pressed");
     }
 }

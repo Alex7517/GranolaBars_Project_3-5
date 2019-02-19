@@ -57,13 +57,35 @@ public class MainFrame extends JFrame {
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
         searchButton.setPreferredSize(buttonDimension);
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doSearch();
+            }
+        });
 
         radioButton = new JRadioButton("match all");
         radioButton.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchAll();
+            }
+        });
+
         radioButton1 = new JRadioButton("match any");
         radioButton1.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchAny();
+            }
+        });
+
         radioButton2 = new JRadioButton("match exactly");
         radioButton2.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doMatchExactly();
+            }
+        });
 
         // buttonGroup = new ButtonGroup();
         // will need to be added later
@@ -148,5 +170,21 @@ public class MainFrame extends JFrame {
         panel2.add(searchScrollPane, gc);
 
         // Need to make an about tab & page
+    }
+
+    private void doSearch() {
+        System.out.println(searchButton.getText() + " button pressed");
+    }
+
+    private void doMatchAll() {
+        System.out.println(radioButton.getText() + " button pressed");
+    }
+
+    private void doMatchAny() {
+        System.out.println(radioButton1.getText() + " button pressed");
+    }
+
+    private void doMatchExactly() {
+        System.out.println(radioButton2.getText() + " button pressed");
     }
 }
