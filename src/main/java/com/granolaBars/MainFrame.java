@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
         searchButton.setPreferredSize(buttonDimension);
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(searchButton.getText() + " pressed");
+                System.out.println(searchButton.getText() + " button pressed");
             }
         });
 

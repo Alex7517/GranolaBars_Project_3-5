@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.TextArea;
 
@@ -89,6 +91,32 @@ public class MaintenanceFrame extends JFrame{
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
                 mainFrame.MaintenanceFrameOpen = false;
+            }
+        });
+
+        // Adding action listeners for buttons
+
+        AddFileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(AddFileButton.getText() + " button pressed");
+            }
+        });
+
+        RebuildButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(RebuildButton.getText() + " button pressed");
+            }
+        });
+
+        RemoveSelectedFilesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+            }
+        });
+
+        ResetWindowsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(ResetWindowsButton.getText() + " button pressed");
             }
         });
     }
