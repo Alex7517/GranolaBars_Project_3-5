@@ -2,10 +2,11 @@ package com.granolaBars;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.BorderFactory;
-import javax.swing.border.Border;
 import java.awt.event.KeyEvent;
-import java.awt.TextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import javax.swing.JFileChooser;
 
 public class MaintenanceFrame extends JFrame{
      private JLabel MaintenanceFormHeader;
@@ -51,6 +52,15 @@ public class MaintenanceFrame extends JFrame{
        
         //Add file button
         AddFileButton = new JButton("Add File");  
+        AddFileButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                JFileChooser FileSelect = new JFileChooser();
+                FileSelect.showOpenDialog(null);
+                File f = FileSelect.getSelectedFile();
+            }
+        });
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
@@ -94,7 +104,10 @@ public class MaintenanceFrame extends JFrame{
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
                 mainFrame.MaintenanceFrameOpen = false;
+                
+                
             }
         });
     }
 }
+
