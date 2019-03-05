@@ -24,7 +24,7 @@ public class FileIndexDBManager {
         IndexedFile file;
         file = new IndexedFile();
         file.setPath(path);
-        //file.setLastModification(lastModification);
+        file.setLastModification(lastModification);
 
         //This adds the file to the DB
         EntityTransaction tx = em.getTransaction();

@@ -9,14 +9,15 @@ public class IndexedFile {
     private int id;
     private String path;
     //This is an issue with DATA, I think the DB states it needs more info
-    //private Date lastModification;
+    @Temporal(value=TemporalType.DATE)
+    private Date lastModification;
 
     public IndexedFile () {
     }
 
     public IndexedFile (String path, Date lastModification) {
         this.path = path;
-        //this.lastModification = lastModification;
+        this.lastModification = lastModification;
     }
 
     public int getId() {
@@ -31,11 +32,11 @@ public class IndexedFile {
         return path;
     }
 
-    /*public void setLastModification(Date lastModification) {
+    public void setLastModification(Date lastModification) {
         this.lastModification = lastModification;
     }
 
     public Date getLastModification() {
         return lastModification;
-    }*/
+    }
 }
