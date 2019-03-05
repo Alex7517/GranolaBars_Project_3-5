@@ -14,7 +14,7 @@ public class FileIndexDBManager {
     static void testDB(){
         createFile("File1","I am a Test Path: C:Place", new Date());
         createFile("File2","I am another Test Path: C:Place2", new Date());
-        System.out.println(loadFile("SELECT file FROM IndexedFile"));
+        System.out.println(loadFile("SELECT file FROM IndexedFile file"));
     }
 
     //This will create a file to be added to the DB, then adds it
