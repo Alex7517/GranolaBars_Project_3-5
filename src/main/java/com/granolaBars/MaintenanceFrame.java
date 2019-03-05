@@ -19,6 +19,7 @@ public class MaintenanceFrame extends JFrame{
      private JButton ResetWindowsButton;
      private JTable FileNameAndStatus;
      
+     
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
@@ -60,7 +61,8 @@ public class MaintenanceFrame extends JFrame{
                 JFileChooser FileSelect = new JFileChooser();
                 FileSelect.showOpenDialog(null);
                 File f = FileSelect.getSelectedFile();
-                FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date());
+                FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
+
             }
         });
         AddFileButton.setMnemonic(KeyEvent.VK_A);
