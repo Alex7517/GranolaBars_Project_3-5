@@ -12,20 +12,18 @@ public class FileIndexDBManager {
     static EntityManager em = emf.createEntityManager();
 
     static void testDB(){
-        createFile("I am a Test Path: C:Place", new Date());
-        createFile("I am another Test Path: C:Place2", new Date());
+        createFile("File1","I am a Test Path: C:Place", new Date());
+        createFile("File2","I am another Test Path: C:Place2", new Date());
         System.out.println(loadFile("SELECT file FROM IndexedFile"));
     }
 
     //This will create a file to be added to the DB, then adds it
     //This is a partial stub Method
-    static boolean createFile(String path, Date lastModification){
+    static boolean createFile(String name, String path, Date lastModification){
         try{
             //This creates a IndexedFile to be added to the DB
             IndexedFile file;
-            file = new IndexedFile();
-            file.setPath(path);
-            file.setLastModification(lastModification);
+            file = new IndexedFile(name, path, lastModification);
 
             //This adds the file to the DB
             EntityTransaction tx = em.getTransaction();

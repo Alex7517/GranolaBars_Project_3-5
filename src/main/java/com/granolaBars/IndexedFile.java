@@ -7,6 +7,7 @@ import java.util.Date;
 public class IndexedFile {
     @Id @GeneratedValue
     private int id;
+    private String name;
     private String path;
     //This is an issue with DATA, I think the DB states it needs more info
     @Temporal(value=TemporalType.DATE)
@@ -15,7 +16,8 @@ public class IndexedFile {
     public IndexedFile () {
     }
 
-    public IndexedFile (String path, Date lastModification) {
+    public IndexedFile (String name, String path, Date lastModification) {
+        this.name = name;
         this.path = path;
         this.lastModification = lastModification;
     }
@@ -23,6 +25,10 @@ public class IndexedFile {
     public int getId() {
         return id;
     }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getName() { return name; }
 
     public void setPath(String path) {
         this.path = path;
