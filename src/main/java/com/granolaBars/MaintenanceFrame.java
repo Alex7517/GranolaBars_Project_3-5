@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.Date;
 import javax.swing.JFileChooser;
 
 public class MaintenanceFrame extends JFrame{
@@ -60,7 +59,7 @@ public class MaintenanceFrame extends JFrame{
                 JFileChooser FileSelect = new JFileChooser();
                 FileSelect.showOpenDialog(null);
                 File f = FileSelect.getSelectedFile();
-                FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date());
+                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date());
             }
         });
         AddFileButton.setMnemonic(KeyEvent.VK_A);
