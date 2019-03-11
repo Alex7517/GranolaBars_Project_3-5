@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PersistentDataManager {
-    final static private String FILENAME = "DATA";
     final static private String ID = "IDs";
     final static private String INDEX = "Index";
 
-    static void saveData(Map<Integer,String[]> idData,Map<String, List<Integer[]>> indexData){
+    static void saveData(Map<Integer,String[]> idData,Map<String, List<Integer[]>> indexData, String FILE_NAME){
 
         //This creates a object that contains the DATA and manages the conversion from real DATA to strings
         JSONObject idDataObj = new JSONObject();
@@ -33,7 +32,7 @@ public class PersistentDataManager {
         //It creates the file if not found, and replaces it if it already exists.
         try{
             //This creates the text output steam
-            PrintStream out = new PrintStream( new FileOutputStream( FILENAME ) );
+            PrintStream out = new PrintStream( new FileOutputStream( FILE_NAME ) );
             //This actually saves the DATA to the file
             out.println( idDataObj );
             out.println( indexDataObj );
@@ -46,14 +45,14 @@ public class PersistentDataManager {
         }
     }
 
-    static Map[] loadData(){
+    static Map[] loadData(String FILE_NAME){
         //This array will store the returned maps
         Map[] dataReturn = new Map[2];
 
         //Here is where the DATA is pull in from the file.
         try{
             //This creates the text input steam
-            BufferedReader in = new BufferedReader( new FileReader( FILENAME ) );
+            BufferedReader in = new BufferedReader( new FileReader( FILE_NAME ) );
             //This holds the string pulled from the file
             String idDataString = in.readLine();
             String indexDataString = in.readLine();
