@@ -14,7 +14,16 @@ public class PersistentDataManager {
     final static private String ID = "IDs";
     final static private String INDEX = "Index";
 
-    static void saveData(Map<Integer,String[]> idData,Map<String, List<Integer[]>> indexData, String FILE_NAME){
+    /**
+     * A method that will save the the id and index maps passed to it to the file indicated
+     *
+     * @param idData A Map<Integer,String[]> that is to be saved
+     * @param indexData A Map<String, List<Integer[]>> that is to be saved
+     * @param FILE_NAME A String that indicates what file name to use
+     * @exception FileNotFoundException A Error that im not sure how it would get thrown,
+     *  as im pretty sure it will make the file if not found
+     */
+    static void saveData(Map<Integer,String[]> idData,Map<String, List<Integer[]>> indexData, String FILE_NAME) throws FileNotFoundException{
 
         //This creates a object that contains the DATA and manages the conversion from real DATA to strings
         JSONObject idDataObj = new JSONObject();
@@ -25,8 +34,8 @@ public class PersistentDataManager {
         indexDataObj.put(INDEX,indexData);
 
         //DEBUG This shows that the JSONObject is just being converted to a string normally.
-        System.out.println(idDataObj);
-        System.out.println(indexDataObj);
+        //System.out.println(idDataObj);
+        //System.out.println(indexDataObj);
 
         //This creates the file that saves the persistent DATA.
         //It creates the file if not found, and replaces it if it already exists.
@@ -42,10 +51,19 @@ public class PersistentDataManager {
         //FileNotFoundException is a checked error from the FileOutputStream method above.
         catch (FileNotFoundException e){
             System.out.println(e);
+            throw e;
         }
     }
 
-    static Map[] loadData(String FILE_NAME){
+    /**
+     * A method that will save the the id and index maps passed to it to the file indicated
+     *
+     * @param FILE_NAME A String that indicates what file name to use
+     * @return A Map[] array, position 0 contains the id Map<Integer,String[]>, and position 1 contains the id Map<String, List<Integer[]>>
+     * @exception FileNotFoundException A error that will be thrown if the requested FILE_NAME does not exist
+     * @exception IOException A error that will be thrown if the requested FILE_NAME can not be read properly
+     */
+    static Map[] loadData(String FILE_NAME) throws FileNotFoundException, IOException{
         //This array will store the returned maps
         Map[] dataReturn = new Map[2];
 
@@ -74,10 +92,12 @@ public class PersistentDataManager {
         //FileNotFoundException is a checked error from the FileOutputStream method above.
         catch (FileNotFoundException e){
             System.out.println(e);
+            throw e;
         }
         //IOException is a checked error from the FileOutputStream method above.
         catch (IOException e){
             System.out.println(e);
+            throw e;
         }
         return dataReturn;
     }

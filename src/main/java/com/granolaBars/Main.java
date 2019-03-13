@@ -4,6 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         ActiveDataManager.test();
+        ActiveDataManager test = new ActiveDataManager("DATA");
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);
     }

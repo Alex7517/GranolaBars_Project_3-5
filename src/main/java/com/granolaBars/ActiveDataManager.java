@@ -1,5 +1,6 @@
 package com.granolaBars;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -64,11 +65,24 @@ public class ActiveDataManager {
         j.put("BLUE",temp);
 
         //This calls the method that saves the DATA
-        PersistentDataManager.saveData(i,j,"DATA");
+        try{
+            PersistentDataManager.saveData(i,j,"DATA");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("IDK how, but you found it!");
+        }
 
-
+        Map[] dataReturn = new Map[2];
         //This calls for the DATA and separates the DATA
-        Map[] dataReturn = PersistentDataManager.loadData("DATA");
+        try{
+            dataReturn = PersistentDataManager.loadData("DATA");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Could not find the file named DATA");
+        }
+        catch (IOException e){
+            System.out.println("Could not read the file named DATA");
+        }
         //ID
         Map<Integer, String[]> idDATA = dataReturn[0];
         //Index
@@ -116,7 +130,18 @@ public class ActiveDataManager {
      * then holds the data to the objects active data fields
      */
     void loadData(){
-        Map[] dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
+        Map[] dataReturn = new Map[2];
+        try{
+            dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
+        }
+        catch (FileNotFoundException e){
+            //ERROR We will need to manage this error properly later
+            System.out.println("Could not find the file named DATA");
+        }
+        catch (IOException e){
+            //ERROR We will need to manage this error properly later
+            System.out.println("Could not read the file named DATA");
+        }
         //This will need a try block in case of errors with the returned DATA casting
         //ID
         idDATA = (Map<Integer, String[]>) dataReturn[0];
@@ -129,7 +154,14 @@ public class ActiveDataManager {
      * to the persistent data using the PersistentDataManager class
      */
     void saveDATA(){
-        PersistentDataManager.saveData(idDATA,indexDATA,PD_FILE_NAME);
+        try{
+            PersistentDataManager.saveData(idDATA,indexDATA,PD_FILE_NAME);
+        }
+        catch (FileNotFoundException e){
+            //ERROR We will need to manage this error properly later
+            System.out.println("IDK how, but you found it!");
+        }
+        updateGUI();
     }
 
     /**
@@ -171,16 +203,16 @@ public class ActiveDataManager {
         if(!checkFileExists(filePath)){
             //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
             //This will need to be tested for later
-            removeData(fileId);
+            removeDataPrivate(fileId);
         }
         else if(!checkFileisUTD(fileId)){
             //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
             //This will need to be tested for later
-            removeData(fileId);
+            removeDataPrivate(fileId);
             //POTENTIAL ERROR HERE, as with the other error, if a file is added to the Map,
             //it may cause errors with the foreach loop above
             //This will need to be tested for later
-            addData(filePath);
+            addDataPrivate(filePath);
         }
     }
 
@@ -236,11 +268,23 @@ public class ActiveDataManager {
      * @param filePath A String that indicates the path of the file added
      */
     void addData(String filePath){
+        addDataPrivate(filePath);
+        saveDATA();
+    }
+
+    /*
+     * This is hidden to protect data, notice the lack of saveDATA();
+     * This does what addData(String filePath) says it does
+     *
+     * A method that will add a file to the active data
+     *
+     * @param filePath A String that indicates the path of the file added
+     */
+    private void addDataPrivate(String filePath){
         if(checkFileExists(filePath)){
             if(!checkFileMetaExists(filePath)){
                 Integer fileId = addMeta(filePath);
                 addWords(fileId, filePath);
-                saveDATA();
             }
             else{
                 //If the file already exists then what do we do
@@ -259,10 +303,22 @@ public class ActiveDataManager {
      * @param fileId An int that indicates the id of the file removed
      */
     void removeData(int fileId){
+        removeDataPrivate(fileId);
+        saveDATA();
+    }
+
+    /*
+     * This is hidden to protect data, notice the lack of saveDATA();
+     * This does what removeData(int fileId) says it does
+     *
+     * A method that will remove a file to the active data
+     *
+     * @param fileId An int that indicates the id of the file removed
+     */
+    private void removeDataPrivate(int fileId){
         //I dont think we need to check if data actually exists, but we may
         removeWords(fileId);
         removeMeta(fileId);
-        saveDATA();
     }
 
     /*
@@ -304,6 +360,15 @@ public class ActiveDataManager {
      */
     //STUB
     private void removeWords(int fileId){
+
+    }
+
+    /**
+     * A method that will update the MaintenanceFrame and the temporally MainFrame tables when called
+     *
+     */
+    //STUB
+    void updateGUI(){
 
     }
 }
