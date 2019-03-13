@@ -1,5 +1,6 @@
 package com.granolaBars;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -251,7 +252,11 @@ public class ActiveDataManager {
      */
     //STUB
     boolean checkFileExists(String filePath){
-        return true;
+        File f = new File(filePath);
+        if(f.exists() && !f.isDirectory())
+            return true;
+        else
+            return false;
     }
 
     /**
