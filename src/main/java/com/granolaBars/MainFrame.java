@@ -114,7 +114,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
                 if (!MaintenanceFrameOpen) {
-                    AuthenticationFrame authenticationFrame = new AuthenticationFrame(myself);
+                    MaintenanceFrame authenticationFrame = new MaintenanceFrame(myself);
                     authenticationFrame.setVisible(true);
                     MaintenanceFrameOpen = true;
                 }
