@@ -121,7 +121,7 @@ public class ActiveDataManager {
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
         //Possibly we will need a method to verify the data integrity here
-        //verifyDataIntegrity()
+        verifyDataIntegrity();
         updateData();
     }
 
@@ -371,4 +371,11 @@ public class ActiveDataManager {
     void updateGUI(){
 
     }
+
+    /**
+     * A method that verify the data loaded to see if there is any errors with the data structure
+     *
+     */
+    //STUB
+    void verifyDataIntegrity(){}
 }
