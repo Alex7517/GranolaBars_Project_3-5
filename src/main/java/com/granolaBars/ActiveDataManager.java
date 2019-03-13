@@ -13,6 +13,17 @@ public class ActiveDataManager {
      * This field holds the file index data used by the object
      */
     final String PD_FILE_NAME;
+    final private static String DEFAULT_PD_FILE_NAME = "DATA";
+
+    /*
+     * These are simple Strings used for debug output
+     */
+    final private static boolean DEBUG_MODE = true;
+    final private static String MSG_DATALOADED = "DATA loaded";
+    final private static String MSG_MISSING_FILE = "Could not find the file named ";
+    final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
+    final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
+    final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
 
     /*
      * This field holds the file meta data used by the object
@@ -66,7 +77,7 @@ public class ActiveDataManager {
 
         //This calls the method that saves the DATA
         try{
-            PersistentDataManager.saveData(i,j,"DATA");
+            PersistentDataManager.saveData(i,j,DEFAULT_PD_FILE_NAME);
         }
         catch (FileNotFoundException e){
             System.out.println("IDK how, but you found it!");
@@ -108,7 +119,7 @@ public class ActiveDataManager {
      *
      */
     ActiveDataManager(){
-        this("DATA");
+        this(DEFAULT_PD_FILE_NAME);
     }
 
 
@@ -120,7 +131,6 @@ public class ActiveDataManager {
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
-        //Possibly we will need a method to verify the data integrity here
         verifyDataIntegrity();
         updateData();
     }
@@ -133,20 +143,36 @@ public class ActiveDataManager {
         Map[] dataReturn = new Map[2];
         try{
             dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
+
+            //ID
+            idDATA = (Map<Integer, String[]>) dataReturn[0];
+            //Index
+            indexDATA = (Map<String, List<Integer[]>>) dataReturn[1];
+
+            if (DEBUG_MODE){System.out.println(MSG_DATALOADED);}
         }
         catch (FileNotFoundException e){
-            //ERROR We will need to manage this error properly later
-            System.out.println("Could not find the file named DATA");
+            //This is if the file could not be found, such as the first time it was ran
+            if (DEBUG_MODE){System.out.println(MSG_MISSING_FILE + PD_FILE_NAME);}
+
+            //Creating a new empty file
+            if (DEBUG_MODE){System.out.println(MSG_CREATING_FILE + PD_FILE_NAME);}
+            saveDATA();
+
+            //POTENTIAL ERROR HERE, We will need to make sure there is no chance of infinite loop.
+            loadData();
         }
         catch (IOException e){
-            //ERROR We will need to manage this error properly later
-            System.out.println("Could not read the file named DATA");
+            //ERROR This may be possible if some once changes the PD_FILE when the program was off.
+            //Regardless this means that the Data is corrupt, we will have to decide how to handle this
+            if (DEBUG_MODE){System.out.println(MSG_CANT_READ_FILE+PD_FILE_NAME);}
+            throw new RuntimeException(MSG_CORRUPT_DATA+e);
         }
-        //This will need a try block in case of errors with the returned DATA casting
-        //ID
-        idDATA = (Map<Integer, String[]>) dataReturn[0];
-        //Index
-        indexDATA = (Map<String, List<Integer[]>>) dataReturn[1];
+        catch (ClassCastException e){
+            //This should never happen, as the data was already casted to this within persistentDataManager.
+            if (DEBUG_MODE){System.out.println("***This indicates the data could not be casted properly\n***Let me know how!");}
+            throw new RuntimeException(MSG_CORRUPT_DATA+e);
+        }
     }
 
     /**
@@ -158,8 +184,9 @@ public class ActiveDataManager {
             PersistentDataManager.saveData(idDATA,indexDATA,PD_FILE_NAME);
         }
         catch (FileNotFoundException e){
-            //ERROR We will need to manage this error properly later
-            System.out.println("IDK how, but you found it!");
+            //This should never happen, as the file should be made if its not found.
+            if (DEBUG_MODE){System.out.println("***IDK how, but you found it!\n***Let me know how!");}
+            throw new RuntimeException(e);
         }
         updateGUI();
     }

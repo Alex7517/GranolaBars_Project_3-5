@@ -50,7 +50,6 @@ public class PersistentDataManager {
         }
         //FileNotFoundException is a checked error from the FileOutputStream method above.
         catch (FileNotFoundException e){
-            System.out.println(e);
             throw e;
         }
     }
@@ -91,13 +90,15 @@ public class PersistentDataManager {
         }
         //FileNotFoundException is a checked error from the FileOutputStream method above.
         catch (FileNotFoundException e){
-            System.out.println(e);
             throw e;
         }
         //IOException is a checked error from the FileOutputStream method above.
         catch (IOException e){
-            System.out.println(e);
             throw e;
+        }
+        //This throws the IOException as both should be handled identically
+        catch (ClassCastException e){
+            throw new IOException(e);
         }
         return dataReturn;
     }
