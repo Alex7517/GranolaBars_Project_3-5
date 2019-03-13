@@ -1,11 +1,13 @@
 package com.granolaBars;
 
 public class Main {
+    static ActiveDataManager activeDataManager;
+    static MainFrame mainFrame;
 
     public static void main(String[] args) {
         ActiveDataManager.test();
-        ActiveDataManager test = new ActiveDataManager("DATA");
-        MainFrame mainFrame = new MainFrame();
+        activeDataManager = new ActiveDataManager("DATA");
+        mainFrame = new MainFrame();
         mainFrame.setVisible(true);
     }
 }
