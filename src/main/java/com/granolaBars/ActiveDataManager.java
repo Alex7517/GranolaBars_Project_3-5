@@ -27,6 +27,15 @@ public class ActiveDataManager {
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
 
     /*
+     * These are used to make the code easier to read
+     */
+    final private static int NO_ID = -1;
+    final private static int ID_DATA_PATH = 0;
+    final private static int ID_DATA_TIMESTAMP = 1;
+    final private static int INDEX_DATA_FILE_ID = 0;
+    final private static int INDEX_DATA_POS = 1;
+
+    /*
      * This field holds the file meta data used by the object
      */
     private Map<Integer, String[]> idDATA;
@@ -227,7 +236,7 @@ public class ActiveDataManager {
      * @param fileId An int that indicates the file ID that needs to be checked from the active data
      */
     private void updateDataPrivate(int fileId){
-        String filePath = idDATA.get(fileId)[0];
+        String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
             //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
             //This will need to be tested for later
@@ -277,7 +286,7 @@ public class ActiveDataManager {
      * @return A boolean that indicates if the file is within the meta data
      */
     boolean checkFileMetaExists(String filePath){
-        if (getFileId(filePath)==-1)
+        if (getFileId(filePath)==NO_ID)
             return false;
         else
             return true;
@@ -287,7 +296,7 @@ public class ActiveDataManager {
      * A method that will return the id within the meta data for the given path
      *
      * @param filePath A String that indicates what file path is checked
-     * @return A int that is the file id associated to the specific path, returns -1 if it does not exist
+     * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
     //STUB
     int getFileId(String filePath){
