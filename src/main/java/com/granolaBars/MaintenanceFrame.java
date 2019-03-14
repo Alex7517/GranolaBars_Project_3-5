@@ -60,7 +60,7 @@ public class MaintenanceFrame extends JFrame{
                 JFileChooser FileSelect = new JFileChooser();
                 FileSelect.showOpenDialog(null);
                 File f = FileSelect.getSelectedFile();
-                FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
+                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
             }
         });
         AddFileButton.setMnemonic(KeyEvent.VK_A);

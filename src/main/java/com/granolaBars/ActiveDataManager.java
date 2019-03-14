@@ -34,6 +34,7 @@ public class ActiveDataManager {
     final private static int ID_DATA_TIMESTAMP = 1;
     final private static int INDEX_DATA_FILE_ID = 0;
     final private static int INDEX_DATA_POS = 1;
+    final private static int STARTING_ID = 0;
 
     /*
      * This field holds the file meta data used by the object
