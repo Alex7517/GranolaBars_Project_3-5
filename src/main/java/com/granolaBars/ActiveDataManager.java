@@ -1,5 +1,4 @@
 package com.granolaBars;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -225,8 +224,14 @@ public class ActiveDataManager {
      * @param filePath A String that indicates what file path is checked
      * @return A int that is the file id associated to the specific path, returns -1 if it does not exist
      */
-    //STUB
-    int getFileId(String filePath){
+    int getFileId(String filePath) {
+
+        for (int fileId: idDATA.keySet())
+        {
+            if(idDATA.get(fileId)[0].equals(filePath)) {
+                return fileId;
+            }
+        }
         return -1;
     }
 
