@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
 
     private JPanel panel, panel2;
     private JLabel label, label2;
-    private JButton searchButton, maintenanceButton;
+    private JButton searchButton, maintenanceButton, aboutButton;
     private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
     private JTextField  searchBarTextField;
     private JTable searchResult;
@@ -53,6 +53,7 @@ public class MainFrame extends JFrame {
         label.setPreferredSize(labelDimension);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
 
+
         // search button creation and size
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
@@ -60,6 +61,16 @@ public class MainFrame extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doSearch();
+            }
+        });
+
+        // about button
+        aboutButton = new JButton("about");
+        aboutButton.setPreferredSize(buttonDimension);
+        aboutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doAbout();
             }
         });
 
@@ -139,6 +150,12 @@ public class MainFrame extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(searchBarTextField, gbc);
 
+        // about button in the layout
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(aboutButton, gbc);
+
         // search button in the layout
         gbc.gridx = 2;
         gbc.gridy = 1;
@@ -193,5 +210,9 @@ public class MainFrame extends JFrame {
 
     private void doMatchExactly() {
         System.out.println(radioButtonMExactly.getText() + " button pressed");
+    }
+
+    private void doAbout() {
+        JOptionPane.showMessageDialog(this, "GranolaBars Search Engine", "About", JOptionPane.INFORMATION_MESSAGE);
     }
 }
