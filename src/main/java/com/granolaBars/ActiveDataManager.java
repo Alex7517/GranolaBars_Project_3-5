@@ -3,6 +3,7 @@ package com.granolaBars;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -25,11 +26,18 @@ public class ActiveDataManager {
     final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
+    
 
     /*
      * This field holds the file meta data used by the object
      */
     private Map<Integer, String[]> idDATA;
+    
+    /* 
+    * This field holds the largest ID in the map
+    */
+    private static Integer largestId = 0;
+    
 
     /*
      * This field holds the file index data used by the object
@@ -69,7 +77,7 @@ public class ActiveDataManager {
         List<Integer[]> temp = new ArrayList<>();
         Integer[] array1 = {1,22};
         Integer[] array2 = {3,52};
-
+        
         temp.add(array1);
         temp.add(array2);
 
@@ -360,8 +368,31 @@ public class ActiveDataManager {
      * @return A int that is the new file id for the added meta data
      */
     //STUB
-    private Integer addMeta(String filePath){
-        return 1;
+    public Integer addMeta(String filePath){
+        Integer fileId = -1;
+        
+        // Verify file path exists
+        File newFile = new File(filePath);
+        if ( ! newFile.exists() ) {
+            return fileId;
+        }
+        
+        // Gets the next unused ID
+        do { 
+             ActiveDataManager.largestId = ActiveDataManager.largestId +1;
+        } while ( this.idDATA.containsKey(ActiveDataManager.largestId) );    
+        
+        // Load file properties into array
+        String fileProps[] = new String[2];
+        fileProps[0] = filePath;
+        long tmpModDate = newFile.lastModified();
+        SimpleDateFormat tmpFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+        fileProps[1] = tmpFormat.format(tmpModDate);
+        
+        // Save file properties in map
+        this.idDATA.put(ActiveDataManager.largestId, fileProps);
+        
+        return ActiveDataManager.largestId;
     }
 
     /*
@@ -370,8 +401,12 @@ public class ActiveDataManager {
      * @param fileId An int that indicates the id of the file to be removed
      */
     //STUB
-    private void removeMeta(Integer fileId){
-
+    private void removeMeta(Integer fileId)
+    {
+        if (this.idDATA.containsKey(fileId)) { 
+            this.idDATA.remove(fileId);
+        }
+        return;
     }
 
     /*
