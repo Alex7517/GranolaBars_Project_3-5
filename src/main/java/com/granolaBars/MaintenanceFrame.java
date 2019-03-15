@@ -21,8 +21,10 @@ public class MaintenanceFrame extends JFrame{
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
+    ActiveDataManager activeDataManager;
     
-    public MaintenanceFrame(){
+    public MaintenanceFrame(ActiveDataManager pDataManager){
+        activeDataManager = pDataManager;
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
@@ -53,16 +55,6 @@ public class MaintenanceFrame extends JFrame{
        
         //Add file button
         AddFileButton = new JButton("Add File");  
-        AddFileButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                JFileChooser FileSelect = new JFileChooser();
-                FileSelect.showOpenDialog(null);
-                File f = FileSelect.getSelectedFile();
-                FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
-            }
-        });
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
@@ -113,7 +105,10 @@ public class MaintenanceFrame extends JFrame{
 
         AddFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                doAddFile();
+                JFileChooser FileSelect = new JFileChooser();
+                FileSelect.showOpenDialog(null);
+                File f = FileSelect.getSelectedFile();               
+                doAddFile(f);
             }
         });
 
@@ -136,8 +131,9 @@ public class MaintenanceFrame extends JFrame{
         });
     }
 
-    private void doAddFile() {
-        System.out.println(AddFileButton.getText() + " button pressed");
+    private void doAddFile(File f) {
+        String tmpPath = f.getAbsolutePath();
+        Integer tmpId = activeDataManager.addMeta(tmpPath);
     }
 
     private void doRebuild() {
