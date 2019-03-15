@@ -113,7 +113,7 @@ public class ActiveDataManager {
         //This is the path
         System.out.println(idDATA.get(1)[0]);
         //This is the date
-        System.out.println(new Date(idDATA.get(1)[1]));
+        System.out.println(idDATA.get(1)[1]);
 
         //This returns the list for a specific word
         System.out.println(indexDATA.get("BLUE"));
