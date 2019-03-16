@@ -208,7 +208,9 @@ public class ActiveDataManager {
      * if they are not UTD, then they are updated
      */
     void updateData(){
-        for(int fileId: idDATA.keySet()){
+        //This creates a copy of the maps keys, allowing up to add and remove keys from the map in this loop
+        List<Integer> idDataKeys = new ArrayList<>(idDATA.keySet());
+        for(int fileId: idDataKeys){
             updateDataPrivate(fileId);
         }
         saveDATA();
@@ -239,17 +241,10 @@ public class ActiveDataManager {
     private void updateDataPrivate(int fileId){
         String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
-            //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
-            //This will need to be tested for later
             removeDataPrivate(fileId);
         }
         else if(!checkFileisUTD(fileId)){
-            //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
-            //This will need to be tested for later
             removeDataPrivate(fileId);
-            //POTENTIAL ERROR HERE, as with the other error, if a file is added to the Map,
-            //it may cause errors with the foreach loop above
-            //This will need to be tested for later
             addDataPrivate(filePath);
         }
     }
