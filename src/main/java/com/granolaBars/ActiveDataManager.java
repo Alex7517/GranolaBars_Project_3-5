@@ -25,6 +25,7 @@ public class ActiveDataManager {
     final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
+    final private static String MSG_PATH_NOT_IN_IDDATA = "File not in index ";
 
     /*
      * These are used to make the code easier to read
@@ -337,11 +338,17 @@ public class ActiveDataManager {
     /**
      * A method that will remove a file to the active data
      *
-     * @param fileId An int that indicates the id of the file removed
+     * @param filePath A String that indicates the path of the file removed
      */
-    void removeData(int fileId){
-        removeDataPrivate(fileId);
-        saveDATA();
+    void removeData(String filePath){
+        int fileId = getFileId(filePath);
+        if(fileId==-1) {
+            if (DEBUG_MODE){System.out.println(MSG_PATH_NOT_IN_IDDATA+filePath);}
+        }
+        else{
+            removeDataPrivate(fileId);
+            saveDATA();
+        }
     }
 
     /*
