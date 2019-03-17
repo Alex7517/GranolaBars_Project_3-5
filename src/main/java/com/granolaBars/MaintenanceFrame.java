@@ -18,10 +18,11 @@ public class MaintenanceFrame extends JFrame{
      private JButton ResetWindowsButton;
      private JTable FileNameAndStatus;
      
+     
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
     
-    public MaintenanceFrame(final MainFrame mainFrame){
+    public MaintenanceFrame(){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
@@ -59,7 +60,7 @@ public class MaintenanceFrame extends JFrame{
                 JFileChooser FileSelect = new JFileChooser();
                 FileSelect.showOpenDialog(null);
                 File f = FileSelect.getSelectedFile();
-                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date());
+                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
             }
         });
         AddFileButton.setMnemonic(KeyEvent.VK_A);
@@ -104,9 +105,7 @@ public class MaintenanceFrame extends JFrame{
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
-                mainFrame.MaintenanceFrameOpen = false;
-                
-                
+                Main.mainFrame.MaintenanceFrameOpen = false;
             }
         });
 

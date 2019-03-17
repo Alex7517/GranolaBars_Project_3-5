@@ -22,8 +22,6 @@ public class MainFrame extends JFrame {
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File", "Status"};
 
-    //Others dont know the mainFrame object, so this is passed to other JOptions (This will likely be swapped with a global elsewhere)
-    MainFrame myself = this;
     public boolean MaintenanceFrameOpen = false;
 
     public MainFrame(){
@@ -114,7 +112,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
                 if (!MaintenanceFrameOpen) {
-                    MaintenanceFrame authenticationFrame = new MaintenanceFrame(myself);
+                    MaintenanceFrame authenticationFrame = new MaintenanceFrame();
                     authenticationFrame.setVisible(true);
                     MaintenanceFrameOpen = true;
                 }
