@@ -1,5 +1,4 @@
 package com.granolaBars;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -7,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.table.DefaultTableModel;
 
 public class MaintenanceFrame extends JFrame{
      private JLabel MaintenanceFormHeader;
@@ -17,7 +17,8 @@ public class MaintenanceFrame extends JFrame{
      private JButton RemoveSelectedFilesButton;
      private JButton ResetWindowsButton;
      private JTable FileNameAndStatus;
-     
+     private String[] columnsNames = {"File", "Status"};
+     private DefaultTableModel tableModel;
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
@@ -90,13 +91,15 @@ public class MaintenanceFrame extends JFrame{
         add(ResetWindowsButton);
         
         //Table to store data
+
         String[] columnsNames = {"File", "Status"};
 
         Object[][] data = {
-            {"ReadMe.txt", "Pending"}
-        };
+                {"ReadMe.txt", "Pending"}
+            };
 
-        JTable FileNameAndStatus = new JTable(data, columnsNames);
+
+        FileNameAndStatus = new JTable(data, columnsNames);
         FileNameAndStatus.setLocation(15, 70);
         FileNameAndStatus.setSize(675, 310);
         add(FileNameAndStatus);
@@ -134,6 +137,10 @@ public class MaintenanceFrame extends JFrame{
                 doReset();
             }
         });
+    }
+
+    void updateTable(Object[][] data) {
+        FileNameAndStatus.setModel(new DefaultTableModel(data, columnsNames));
     }
 
     private void doAddFile() {

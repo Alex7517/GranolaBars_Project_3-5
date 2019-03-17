@@ -239,12 +239,12 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the file ID that needs to be checked from the active data
      */
-    private void updateDataPrivate(int fileId){
+    private void updateDataPrivate(int fileId, String fileDOM){
         String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
             removeDataPrivate(fileId);
         }
-        else if(!checkFileisUTD(fileId)){
+        else if(!checkFileisUTD(fileId, fileDOM)){
             removeDataPrivate(fileId);
             addDataPrivate(filePath);
         }
@@ -272,8 +272,12 @@ public class ActiveDataManager {
      * @return A boolean that indicates if the file is UTD
      */
     //STUB
-    boolean checkFileisUTD(int fileId){
-        return true;
+    boolean checkFileisUTD(int fileId, String fileDOM) {
+
+        if(idDATA.get(fileId)[1].equals(fileDOM))
+            return true;
+        else return false;
+
     }
 
     /**
@@ -296,10 +300,16 @@ public class ActiveDataManager {
      * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
     //STUB
-    int getFileId(String filePath){
+    int getFileId(String filePath) {
+
+        for (int fileId: idDATA.keySet())
+        {
+            if(idDATA.get(fileId)[0].equals(filePath)) {
+                return fileId;
+            }
+        }
         return -1;
     }
-
     /**
      * A method that will add a file to the active data
      *
@@ -411,11 +421,19 @@ public class ActiveDataManager {
      * A method that will update the MaintenanceFrame and the temporally MainFrame tables when called
      *
      */
-    //STUB
-    void updateGUI(){
+    void updateGUI() {
 
+        Object[][] data = new Object[idDATA.size()][2];
+        int i = STARTING_ID;
+        for (int fileId: idDATA.keySet()) {
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            i++;
+        }
+
+        Main.maintenanceFrame.updateTable(data);
+        Main.mainFrame.updateTable(data);
     }
-
     /**
      * A method that verify the data loaded to see if there is any errors with the data structure
      *
