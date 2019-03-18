@@ -3,6 +3,7 @@ package com.granolaBars;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.*;
 
 /**
@@ -50,12 +51,12 @@ public class ActiveDataManager {
     //This is example code and will not be used in anyway for the final project
     static void test(){
         //This creates a map of example IDs
-        Map<Integer, String[]> i = new Hashtable<>();
+        Map<Integer, String[]> idDATA = new Hashtable<>();
 
         //This finds a path
         String path;
         try{
-            path = new java.io.File( "." ).getCanonicalPath();
+            path = new java.io.File(DEFAULT_PD_FILE_NAME).getCanonicalPath();
 
         }
         catch (IOException e){
@@ -64,31 +65,31 @@ public class ActiveDataManager {
 
         //This finds the Date --We will likely want to switch to a calender object
         //Then it saves the path and the date to the String array
-        String[] tempS= {path,new Date().toString()};
+        String[] meta = {path, new Date().toString()};
 
         //This adds the String array to the map --Imagine each being a new file and the int to be the ID for each
-        i.put(1,tempS);
-        i.put(2,tempS);
-        i.put(3,tempS);
+        idDATA.put(1, meta);
+        idDATA.put(2, meta);
+        idDATA.put(3, meta);
 
         //This creates a map of example index
-        Map<String, List<Integer[]>> j = new Hashtable<>();
+        Map<String, List<Integer[]>> indexData = new Hashtable<>();
 
         //This creates an list that will hold small arrays, each list item will be associated to a specific word,
                                                             // and each array will hold the words file ID and POS
-        List<Integer[]> temp = new ArrayList<>();
-        Integer[] array1 = {1,22};
-        Integer[] array2 = {3,52};
+        List<Integer[]> index = new ArrayList<>();
+        Integer[] array1 = {1, 22};
+        Integer[] array2 = {3, 52};
 
-        temp.add(array1);
-        temp.add(array2);
+        index.add(array1);
+        index.add(array2);
 
         //This adds the list to the specific word
-        j.put("BLUE",temp);
+        indexData.put("BLUE", index);
 
         //This calls the method that saves the DATA
         try{
-            PersistentDataManager.saveData(i,j,DEFAULT_PD_FILE_NAME);
+            PersistentDataManager.saveData(idDATA, indexData, DEFAULT_PD_FILE_NAME);
         }
         catch (FileNotFoundException e){
             System.out.println("IDK how, but you found it!");
@@ -106,21 +107,21 @@ public class ActiveDataManager {
             System.out.println("Could not read the file named DATA");
         }
         //ID
-        Map<Integer, String[]> idDATA = dataReturn[0];
+        Map<Integer, String[]> idDATAReturned = dataReturn[0];
         //Index
-        Map<String, List<Integer[]>> indexDATA = dataReturn[1];
+        Map<String, List<Integer[]>> indexDATAReturned = dataReturn[1];
 
         //This is the path
-        System.out.println(idDATA.get(1)[0]);
+        System.out.println(idDATAReturned.get(1)[ID_DATA_PATH]);
         //This is the date
-        System.out.println(idDATA.get(1)[1]);
+        System.out.println(idDATAReturned.get(1)[ID_DATA_TIMESTAMP]);
 
         //This returns the list for a specific word
-        System.out.println(indexDATA.get("BLUE"));
+        System.out.println(indexDATAReturned.get("BLUE"));
         //This returns the file Id for the first Blue word
-        System.out.println(indexDATA.get("BLUE").get(0)[0]);
+        System.out.println(indexDATAReturned.get("BLUE").get(0)[INDEX_DATA_FILE_ID]);
         //This returns the POS for the first Blue word
-        System.out.println(indexDATA.get("BLUE").get(0)[1]);
+        System.out.println(indexDATAReturned.get("BLUE").get(0)[INDEX_DATA_POS]);
     }
 
 
@@ -142,8 +143,9 @@ public class ActiveDataManager {
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
-        verifyDataIntegrity();
-        updateData();
+        if (verifyDataIntegrity()) {
+            updateData();
+        }
     }
 
     /**
@@ -243,7 +245,7 @@ public class ActiveDataManager {
             //This will need to be tested for later
             removeDataPrivate(fileId);
         }
-        else if(!checkFileisUTD(fileId)){
+        else if(!checkFileIsUTD(fileId)){
             //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
             //This will need to be tested for later
             removeDataPrivate(fileId);
@@ -276,7 +278,7 @@ public class ActiveDataManager {
      * @return A boolean that indicates if the file is UTD
      */
     //STUB
-    boolean checkFileisUTD(int fileId){
+    boolean checkFileIsUTD(int fileId){
         return true;
     }
 
@@ -287,7 +289,7 @@ public class ActiveDataManager {
      * @return A boolean that indicates if the file is within the meta data
      */
     boolean checkFileMetaExists(String filePath){
-        if (getFileId(filePath)==NO_ID)
+        if (getFileId(filePath) == NO_ID)
             return false;
         else
             return true;
@@ -301,7 +303,7 @@ public class ActiveDataManager {
      */
     //STUB
     int getFileId(String filePath){
-        return -1;
+        return NO_ID;
     }
 
     /**
@@ -416,8 +418,42 @@ public class ActiveDataManager {
 
     /**
      * A method that verify the data loaded to see if there is any errors with the data structure
-     *
+     * @return True is data structure has no errors or false otherwise
      */
-    //STUB
-    void verifyDataIntegrity(){}
+    boolean verifyDataIntegrity() {
+        // gets keys for all indexes
+        Set<Integer> ids = idDATA.keySet();
+
+        // for each id in meta data map
+        for (Integer id: ids) {
+            // get meta data
+            String[] metadata = idDATA.get(id);
+            // check if file is exist
+            if (!checkFileExists(metadata[ID_DATA_PATH])) {
+                return false;
+            }
+            // check if rile is up to date
+            if (!checkFileIsUTD(id)) {
+                return false;
+            }
+
+            // check integrity of each index
+
+            Set<String> words = indexDATA.keySet();
+            // for each index
+            for (String word: words) {
+                List<Integer[]> index = indexDATA.get(word);
+                // for each pair file_id - data_pos
+                for (Integer[] pair: index){
+                    int fileId = pair[INDEX_DATA_FILE_ID];
+                    // check if this file_id contains in metadata map
+                    if (!idDATA.containsKey(fileId)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        // integrity OK
+        return true;
+    }
 }
