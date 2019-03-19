@@ -73,13 +73,6 @@ public class MaintenanceFrame extends JFrame{
         RemoveSelectedFilesButton.setSize(175, 30);
         RemoveSelectedFilesButton.setLocation(475, 390);
         add(RemoveSelectedFilesButton);
-    
-        //Add reset windows button
-        ResetWindowsButton = new JButton("Reset Windows");
-        ResetWindowsButton.setMnemonic(KeyEvent.VK_W);
-        ResetWindowsButton.setSize(125, 30);
-        ResetWindowsButton.setLocation(10, 425);
-        add(ResetWindowsButton);
         
         //Table to store data
 
@@ -120,12 +113,6 @@ public class MaintenanceFrame extends JFrame{
         RemoveSelectedFilesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doRemoveSelected();
-            }
-        });
-
-        ResetWindowsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doReset();
             }
         });
     }
