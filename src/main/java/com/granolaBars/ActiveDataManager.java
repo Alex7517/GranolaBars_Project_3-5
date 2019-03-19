@@ -421,35 +421,16 @@ public class ActiveDataManager {
      * @return True is data structure has no errors or false otherwise
      */
     boolean verifyDataIntegrity() {
-        // gets keys for all indexes
-        Set<Integer> ids = idDATA.keySet();
-
-        // for each id in meta data map
-        for (Integer id: ids) {
-            // get meta data
-            String[] metadata = idDATA.get(id);
-            // check if file is exist
-            if (!checkFileExists(metadata[ID_DATA_PATH])) {
-                return false;
-            }
-            // check if rile is up to date
-            if (!checkFileIsUTD(id)) {
-                return false;
-            }
-
-            // check integrity of each index
-
-            Set<String> words = indexDATA.keySet();
-            // for each index
-            for (String word: words) {
-                List<Integer[]> index = indexDATA.get(word);
-                // for each pair file_id - data_pos
-                for (Integer[] pair: index){
-                    int fileId = pair[INDEX_DATA_FILE_ID];
-                    // check if this file_id contains in metadata map
-                    if (!idDATA.containsKey(fileId)) {
-                        return false;
-                    }
+        Set<String> words = indexDATA.keySet();
+        // for each index
+        for (String word: words) {
+            List<Integer[]> index = indexDATA.get(word);
+            // for each pair file_id - data_pos
+            for (Integer[] pair: index){
+                int fileId = pair[INDEX_DATA_FILE_ID];
+                // check if this file_id contains in metadata map
+                if (!idDATA.containsKey(fileId)) {
+                    return false;
                 }
             }
         }
