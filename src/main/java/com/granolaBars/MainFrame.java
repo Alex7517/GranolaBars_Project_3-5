@@ -1,6 +1,7 @@
 package com.granolaBars;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +14,8 @@ public class MainFrame extends JFrame {
     Dimension dime = new Dimension (frameWidth, frameHeight);
 
     private JPanel panel, panel2;
-    private JLabel label, label2;
-    private JButton searchButton, maintenanceButton;
+    private JLabel label;
+    private JButton searchButton, maintenanceButton, aboutButton;
     private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
     private JTextField  searchBarTextField;
     private JTable searchResult;
@@ -22,7 +23,7 @@ public class MainFrame extends JFrame {
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File", "Status"};
 
-    public boolean MaintenanceFrameOpen = false;
+    public boolean maintenanceFrameOpen = false;
 
     public MainFrame(){
         //Setting up its personal settings
@@ -53,6 +54,7 @@ public class MainFrame extends JFrame {
         label.setPreferredSize(labelDimension);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
 
+
         // search button creation and size
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
@@ -60,6 +62,16 @@ public class MainFrame extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doSearch();
+            }
+        });
+
+        // about button
+        aboutButton = new JButton("about");
+        aboutButton.setPreferredSize(buttonDimension);
+        aboutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doAbout();
             }
         });
 
@@ -111,10 +123,9 @@ public class MainFrame extends JFrame {
         maintenanceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
-                if (!MaintenanceFrameOpen) {
-                    MaintenanceFrame authenticationFrame = new MaintenanceFrame();
-                    authenticationFrame.setVisible(true);
-                    MaintenanceFrameOpen = true;
+                if (!maintenanceFrameOpen) {
+                    Main.maintenanceFrame.setVisible(true);
+                    maintenanceFrameOpen = true;
                 }
             }
         });
@@ -138,6 +149,12 @@ public class MainFrame extends JFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(searchBarTextField, gbc);
+
+        // about button in the layout
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(aboutButton, gbc);
 
         // search button in the layout
         gbc.gridx = 2;
@@ -176,7 +193,13 @@ public class MainFrame extends JFrame {
         gc.insets = new Insets(0,20,0,20);
         panel2.add(searchScrollPane, gc);
 
+
         // Need to make an about tab & page
+    }
+        //Table will not update like this in final product. This
+        // will have to be changed or removed.
+    void updateTable(Object[][] data) {
+        searchResult.setModel(new DefaultTableModel(data, columnsNames));
     }
 
     private void doSearch() {
@@ -193,5 +216,9 @@ public class MainFrame extends JFrame {
 
     private void doMatchExactly() {
         System.out.println(radioButtonMExactly.getText() + " button pressed");
+    }
+
+    private void doAbout() {
+        JOptionPane.showMessageDialog(this, "GranolaBars Search Engine", "About", JOptionPane.INFORMATION_MESSAGE);
     }
 }

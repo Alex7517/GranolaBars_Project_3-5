@@ -3,6 +3,8 @@ package com.granolaBars;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.io.InvalidObjectException;
 import java.util.*;
 
 /**
@@ -13,18 +15,25 @@ public class ActiveDataManager {
     /**
      * This field holds the file index data used by the object
      */
-    final String PD_FILE_NAME;
+    final public String PD_FILE_NAME;
     final private static String DEFAULT_PD_FILE_NAME = "DATA";
 
     /*
      * These are simple Strings used for debug output
      */
-    final private static boolean DEBUG_MODE = true;
+    final public static boolean DEBUG_MODE = true;
     final private static String MSG_DATALOADED = "DATA loaded";
-    final private static String MSG_MISSING_FILE = "Could not find the file named ";
-    final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
+    final private static String MSG_MISSING_DATA_FILE = "Could not find data file: ";
+    final private static String MSG_CREATING_DATA_FILE = "Creating a empty data file named: ";
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
-    final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
+    final private static String MSG_CANT_READ_FILE = "Could not read the file: ";
+    final private static String MSG_PATH_NOT_IN_IDDATA = " was not in index";
+    final private static String MSG_ERROR_CURRUPT_DATA_STRUCTURE = "Corruption found in the data files";
+    final private static String MSG_DATA_ADDED = " was added";
+    final private static String MSG_DATA_REMOVED = " was removed";
+    final private static String MSG_DATA_ALREADY_EXISTS = " already exists in index";
+    final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
+    final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
 
     /*
      * These are used to make the code easier to read
@@ -35,6 +44,7 @@ public class ActiveDataManager {
     final private static int INDEX_DATA_FILE_ID = 0;
     final private static int INDEX_DATA_POS = 1;
     final private static int STARTING_ID = 0;
+    final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
 
     /*
      * This field holds the file meta data used by the object
@@ -142,18 +152,21 @@ public class ActiveDataManager {
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
-        verifyDataIntegrity();
-        updateData();
+        if (verifyDataIntegrity()) {
+            updateAllData();
+        }
+        else{
+            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
+        }
     }
 
     /**
      * A method that will load the persistent data using the PersistentDataManager class,
      * then holds the data to the objects active data fields
      */
-    void loadData(){
-        Map[] dataReturn = new Map[2];
+    public void loadData(){
         try{
-            dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
+            Map[] dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
 
             //ID
             idDATA = (Map<Integer, String[]>) dataReturn[0];
@@ -164,10 +177,10 @@ public class ActiveDataManager {
         }
         catch (FileNotFoundException e){
             //This is if the file could not be found, such as the first time it was ran
-            if (DEBUG_MODE){System.out.println(MSG_MISSING_FILE + PD_FILE_NAME);}
+            if (DEBUG_MODE){System.out.println(MSG_MISSING_DATA_FILE + PD_FILE_NAME);}
 
             //Creating a new empty file
-            if (DEBUG_MODE){System.out.println(MSG_CREATING_FILE + PD_FILE_NAME);}
+            if (DEBUG_MODE){System.out.println(MSG_CREATING_DATA_FILE + PD_FILE_NAME);}
             saveDATA();
 
             //POTENTIAL ERROR HERE, We will need to make sure there is no chance of infinite loop.
@@ -186,11 +199,11 @@ public class ActiveDataManager {
         }
     }
 
-    /**
+    /*
      * A method that will save the objects active data fields,
      * to the persistent data using the PersistentDataManager class
      */
-    void saveDATA(){
+    private void saveDATA(){
         try{
             PersistentDataManager.saveData(idDATA,indexDATA,PD_FILE_NAME);
         }
@@ -199,7 +212,6 @@ public class ActiveDataManager {
             if (DEBUG_MODE){System.out.println("***IDK how, but you found it!\n***Let me know how!");}
             throw new RuntimeException(e);
         }
-        updateGUI();
     }
 
     /**
@@ -207,11 +219,14 @@ public class ActiveDataManager {
      * if they do not exist, then the files data is removed
      * if they are not UTD, then they are updated
      */
-    void updateData(){
-        for(int fileId: idDATA.keySet()){
+    public void updateAllData(){
+        //This creates a copy of the maps keys, allowing up to add and remove keys from the map in this loop
+        List<Integer> idDataKeys = new ArrayList<>(idDATA.keySet());
+        for(int fileId: idDataKeys){
             updateDataPrivate(fileId);
         }
         saveDATA();
+        updateGUI();
     }
 
     /**
@@ -221,9 +236,10 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the file ID that needs to be checked from the active data
      */
-    void updateData(int fileId){
+    public void updateData(int fileId){
         updateDataPrivate(fileId);
         saveDATA();
+        updateGUI();
     }
 
     /*
@@ -239,17 +255,12 @@ public class ActiveDataManager {
     private void updateDataPrivate(int fileId){
         String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
-            //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
-            //This will need to be tested for later
+            if (DEBUG_MODE){System.out.println(MSG_MISSING_DATA_FILE+filePath);}
             removeDataPrivate(fileId);
         }
         else if(!checkFileisUTD(fileId)){
-            //POTENTIAL ERROR HERE, if it removes the file it may cause errors with the foreach loop above
-            //This will need to be tested for later
+            if (DEBUG_MODE){System.out.println(MSG_FILE_NOT_UTD+filePath);}
             removeDataPrivate(fileId);
-            //POTENTIAL ERROR HERE, as with the other error, if a file is added to the Map,
-            //it may cause errors with the foreach loop above
-            //This will need to be tested for later
             addDataPrivate(filePath);
         }
     }
@@ -260,8 +271,7 @@ public class ActiveDataManager {
      * @param filePath A String that indicates what file path is checked
      * @return A boolean that indicates if the file exists
      */
-    //STUB
-    boolean checkFileExists(String filePath){
+    public boolean checkFileExists(String filePath){
         File f = new File(filePath);
         if(f.exists() && !f.isDirectory())
             return true;
@@ -275,9 +285,16 @@ public class ActiveDataManager {
      * @param fileId An int that indicates what file id is checked
      * @return A boolean that indicates if the file is UTD
      */
-    //STUB
-    boolean checkFileisUTD(int fileId){
-        return true;
+    public boolean checkFileisUTD(int fileId) {
+        String savedTimeStamp = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+        String fileTimeStamp = getFileCurrentTimestamp(idDATA.get(fileId)[ID_DATA_PATH]);
+        if(savedTimeStamp.equals(fileTimeStamp)){
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
     /**
@@ -286,7 +303,7 @@ public class ActiveDataManager {
      * @param filePath A String that indicates what file path is checked
      * @return A boolean that indicates if the file is within the meta data
      */
-    boolean checkFileMetaExists(String filePath){
+    public boolean checkFileMetaExists(String filePath){
         if (getFileId(filePath)==NO_ID)
             return false;
         else
@@ -300,8 +317,15 @@ public class ActiveDataManager {
      * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
     //STUB
-    int getFileId(String filePath){
-        return -1;
+    public int getFileId(String filePath) {
+
+        for (int fileId: idDATA.keySet())
+        {
+            if(idDATA.get(fileId)[ID_DATA_PATH].equals(filePath)){
+                return fileId;
+            }
+        }
+        return NO_ID;
     }
 
     /**
@@ -309,9 +333,10 @@ public class ActiveDataManager {
      *
      * @param filePath A String that indicates the path of the file added
      */
-    void addData(String filePath){
+    public void addData(String filePath){
         addDataPrivate(filePath);
         saveDATA();
+        updateGUI();
     }
 
     /*
@@ -327,13 +352,16 @@ public class ActiveDataManager {
             if(!checkFileMetaExists(filePath)){
                 Integer fileId = addMeta(filePath);
                 addWords(fileId, filePath);
+                if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ADDED);}
             }
             else{
+                if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ALREADY_EXISTS);}
                 //If the file already exists then what do we do
                 //Do we ignore it or update it
             }
         }
         else{
+            if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_DOES_NOT_EXIST);}
             //If the file does not exist then what do we do
             //Do we ignore it or throw an error
         }
@@ -342,11 +370,18 @@ public class ActiveDataManager {
     /**
      * A method that will remove a file to the active data
      *
-     * @param fileId An int that indicates the id of the file removed
+     * @param filePath A String that indicates the path of the file removed
      */
-    void removeData(int fileId){
-        removeDataPrivate(fileId);
-        saveDATA();
+    public void removeData(String filePath){
+        int fileId = getFileId(filePath);
+        if(fileId==-1) {
+            if (DEBUG_MODE){System.out.println(filePath+MSG_PATH_NOT_IN_IDDATA);}
+        }
+        else{
+            removeDataPrivate(fileId);
+            saveDATA();
+            updateGUI();
+        }
     }
 
     /*
@@ -359,6 +394,7 @@ public class ActiveDataManager {
      */
     private void removeDataPrivate(int fileId){
         //I dont think we need to check if data actually exists, but we may
+        if (DEBUG_MODE){System.out.println(idDATA.get(fileId)[ID_DATA_PATH]+MSG_DATA_REMOVED);}
         removeWords(fileId);
         removeMeta(fileId);
     }
@@ -369,9 +405,24 @@ public class ActiveDataManager {
      * @param filePath A String that indicates the path of the file to be added
      * @return A int that is the new file id for the added meta data
      */
-    //STUB
     private Integer addMeta(String filePath){
-        return 1;
+        //Find first unused ID
+        int newID = NO_ID;
+        for(int i = STARTING_ID; newID==NO_ID; i++){
+            if(!idDATA.containsKey(i)){
+                newID = i;
+            }
+        }
+
+        // Load file properties into array
+        String fileProps[] = new String[2];
+        fileProps[ID_DATA_PATH] = filePath;
+        fileProps[ID_DATA_TIMESTAMP] = getFileCurrentTimestamp(filePath);
+
+        // Save file properties in map
+        idDATA.put(newID, fileProps);
+
+        return newID;
     }
 
     /*
@@ -379,9 +430,9 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the id of the file to be removed
      */
-    //STUB
-    private void removeMeta(Integer fileId){
-
+    private void removeMeta(Integer fileId)
+    {
+        idDATA.remove(fileId);
     }
 
     /*
@@ -409,15 +460,52 @@ public class ActiveDataManager {
      * A method that will update the MaintenanceFrame and the temporally MainFrame tables when called
      *
      */
-    //STUB
-    void updateGUI(){
+    public void updateGUI() {
 
+        Object[][] data = new Object[idDATA.size()][2];
+        int i = STARTING_ID;
+        for (int fileId: idDATA.keySet()) {
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
+            data[i][ID_DATA_TIMESTAMP] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            i++;
+        }
+
+        Main.maintenanceFrame.updateTable(data);
+         //Table will not update like this in final product. This
+        // will have to be changed or removed.
+        Main.mainFrame.updateTable(data);
     }
 
     /**
      * A method that verify the data loaded to see if there is any errors with the data structure
-     *
+     * @return True is data structure has no errors or false otherwise
      */
-    //STUB
-    void verifyDataIntegrity(){}
+    public boolean verifyDataIntegrity() {
+        Set<String> words = indexDATA.keySet();
+        // for each index
+        for (String word: words) {
+            List<Integer[]> index = indexDATA.get(word);
+            // for each pair file_id - data_pos
+            for (Integer[] pair: index){
+                int fileId = pair[INDEX_DATA_FILE_ID];
+                // check if this file_id contains in metadata map
+                if (!idDATA.containsKey(fileId)) {
+                    return false;
+                }
+            }
+        }
+        // integrity OK
+        return true;
+    }
+
+    /**
+     * A method that will get the current timestamp of a file
+     *
+     * @param filePath The path of the file to get the timestamp from
+     * @return returns the current timestamp of a file
+     */
+    public String getFileCurrentTimestamp(String filePath){
+        SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_Format);
+        return timestampFormat.format(new File(filePath).lastModified());
+    }
 }

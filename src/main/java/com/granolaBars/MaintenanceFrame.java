@@ -1,12 +1,13 @@
 package com.granolaBars;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import javax.swing.JFileChooser;
+import javax.swing.table.DefaultTableModel;
 
 public class MaintenanceFrame extends JFrame{
      private JLabel MaintenanceFormHeader;
@@ -17,7 +18,8 @@ public class MaintenanceFrame extends JFrame{
      private JButton RemoveSelectedFilesButton;
      private JButton ResetWindowsButton;
      private JTable FileNameAndStatus;
-     
+     private String[] columnsNames = {"File", "Status"};
+     private DefaultTableModel tableModel;
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
@@ -52,17 +54,7 @@ public class MaintenanceFrame extends JFrame{
         add(StatusLabel);
        
         //Add file button
-        AddFileButton = new JButton("Add File");  
-        AddFileButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                JFileChooser FileSelect = new JFileChooser();
-                FileSelect.showOpenDialog(null);
-                File f = FileSelect.getSelectedFile();
-                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
-            }
-        });
+        AddFileButton = new JButton("Add File");
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
@@ -81,22 +73,17 @@ public class MaintenanceFrame extends JFrame{
         RemoveSelectedFilesButton.setSize(175, 30);
         RemoveSelectedFilesButton.setLocation(475, 390);
         add(RemoveSelectedFilesButton);
-    
-        //Add reset windows button
-        ResetWindowsButton = new JButton("Reset Windows");
-        ResetWindowsButton.setMnemonic(KeyEvent.VK_W);
-        ResetWindowsButton.setSize(125, 30);
-        ResetWindowsButton.setLocation(10, 425);
-        add(ResetWindowsButton);
         
         //Table to store data
+
         String[] columnsNames = {"File", "Status"};
 
         Object[][] data = {
-            {"ReadMe.txt", "Pending"}
-        };
+                {"ReadMe.txt", "Pending"}
+            };
 
-        JTable FileNameAndStatus = new JTable(data, columnsNames);
+
+        FileNameAndStatus = new JTable(data, columnsNames);
         FileNameAndStatus.setLocation(15, 70);
         FileNameAndStatus.setSize(675, 310);
         add(FileNameAndStatus);
@@ -105,7 +92,7 @@ public class MaintenanceFrame extends JFrame{
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
-                Main.mainFrame.MaintenanceFrameOpen = false;
+                Main.mainFrame.maintenanceFrameOpen = false;
             }
         });
 
@@ -128,16 +115,24 @@ public class MaintenanceFrame extends JFrame{
                 doRemoveSelected();
             }
         });
+    }
 
-        ResetWindowsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doReset();
-            }
-        });
+    void updateTable(Object[][] data) {
+        FileNameAndStatus.setModel(new DefaultTableModel(data, columnsNames));
     }
 
     private void doAddFile() {
-        System.out.println(AddFileButton.getText() + " button pressed");
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.addData(tmpPath);
     }
 
     private void doRebuild() {
@@ -145,7 +140,17 @@ public class MaintenanceFrame extends JFrame{
     }
 
     private void doRemoveSelected() {
-        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.removeData(tmpPath);
     }
 
     private void doReset() {
