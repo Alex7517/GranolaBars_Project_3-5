@@ -444,6 +444,8 @@ public class ActiveDataManager {
      * A method that will update the MaintenanceFrame and the temporally MainFrame tables when called
      *
      */
+    
+    
     void updateGUI() {
 
         Object[][] data = new Object[idDATA.size()][2];
@@ -455,6 +457,8 @@ public class ActiveDataManager {
         }
 
         Main.maintenanceFrame.updateTable(data);
+         //Table will not update like this in final product. This
+        // will have to be changed or removed.
         Main.mainFrame.updateTable(data);
     }
     /**
