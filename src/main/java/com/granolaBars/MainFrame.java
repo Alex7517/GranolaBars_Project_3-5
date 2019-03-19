@@ -1,6 +1,7 @@
 package com.granolaBars;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +22,9 @@ public class MainFrame extends JFrame {
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File", "Status"};
+    private DefaultTableModel tableModel;
 
-    public boolean MaintenanceFrameOpen = false;
+    public boolean maintenanceFrameOpen = false;
 
     public MainFrame(){
         //Setting up its personal settings
@@ -122,10 +124,9 @@ public class MainFrame extends JFrame {
         maintenanceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
-                if (!MaintenanceFrameOpen) {
-                    MaintenanceFrame authenticationFrame = new MaintenanceFrame();
-                    authenticationFrame.setVisible(true);
-                    MaintenanceFrameOpen = true;
+                if (!maintenanceFrameOpen) {
+                    Main.maintenanceFrame.setVisible(true);
+                    maintenanceFrameOpen = true;
                 }
             }
         });
@@ -193,7 +194,12 @@ public class MainFrame extends JFrame {
         gc.insets = new Insets(0,20,0,20);
         panel2.add(searchScrollPane, gc);
 
+
         // Need to make an about tab & page
+    }
+
+    void updateTable(Object[][] data) {
+        searchResult.setModel(new DefaultTableModel(data, columnsNames));
     }
 
     private void doSearch() {

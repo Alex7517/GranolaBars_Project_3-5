@@ -275,9 +275,14 @@ public class ActiveDataManager {
      * @param fileId An int that indicates what file id is checked
      * @return A boolean that indicates if the file is UTD
      */
-    //STUB
-    boolean checkFileisUTD(int fileId){
-        return true;
+    boolean checkFileisUTD(int fileId) {
+        String savedTimeStamp = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+        File file = new File(idDATA.get(fileId)[ID_DATA_PATH]);
+        String fileTimeStamp = new Date(file.lastModified()).toString();
+        if(savedTimeStamp.equals(fileTimeStamp))
+            return true;
+        else return false;
+
     }
 
     /**
@@ -300,7 +305,14 @@ public class ActiveDataManager {
      * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
     //STUB
-    int getFileId(String filePath){
+    int getFileId(String filePath) {
+
+        for (int fileId: idDATA.keySet())
+        {
+            if(idDATA.get(fileId)[ID_DATA_PATH].equals(filePath)){
+                return fileId;
+            }
+        }
         return NO_ID;
     }
 
@@ -430,11 +442,19 @@ public class ActiveDataManager {
      * A method that will update the MaintenanceFrame and the temporally MainFrame tables when called
      *
      */
-    //STUB
-    void updateGUI(){
+    void updateGUI() {
 
+        Object[][] data = new Object[idDATA.size()][2];
+        int i = STARTING_ID;
+        for (int fileId: idDATA.keySet()) {
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            i++;
+        }
+
+        Main.maintenanceFrame.updateTable(data);
+        Main.mainFrame.updateTable(data);
     }
-
     /**
      * A method that verify the data loaded to see if there is any errors with the data structure
      * @return True is data structure has no errors or false otherwise
