@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
     Dimension dime = new Dimension (frameWidth, frameHeight);
 
     private JPanel panel, panel2;
-    private JLabel label, label2;
+    private JLabel label;
     private JButton searchButton, maintenanceButton, aboutButton;
     private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
     private JTextField  searchBarTextField;
@@ -22,7 +22,6 @@ public class MainFrame extends JFrame {
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File", "Status"};
-    private DefaultTableModel tableModel;
 
     public boolean maintenanceFrameOpen = false;
 

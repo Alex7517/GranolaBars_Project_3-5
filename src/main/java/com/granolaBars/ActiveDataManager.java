@@ -29,6 +29,7 @@ public class ActiveDataManager {
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
     final private static String MSG_PATH_NOT_IN_IDDATA = "File not in index ";
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
+    final private static String MSG_ERROR_CURRUPT_DATA_STRUCTURE = "Corruption found in the data files";
 
     /*
      * These are used to make the code easier to read
@@ -148,6 +149,9 @@ public class ActiveDataManager {
         loadData();
         if (verifyDataIntegrity()) {
             updateAllData();
+        }
+        else{
+            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
         }
     }
 
@@ -450,7 +454,7 @@ public class ActiveDataManager {
         int i = STARTING_ID;
         for (int fileId: idDATA.keySet()) {
             data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
-            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            data[i][ID_DATA_TIMESTAMP] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
             i++;
         }
 
