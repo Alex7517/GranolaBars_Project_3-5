@@ -23,10 +23,8 @@ public class MainFrame extends JFrame {
     private String[] columnsNames = {"File", "Status"};
 
     public boolean MaintenanceFrameOpen = false;
-    private ActiveDataManager activeDataManager;
 
-    public MainFrame(ActiveDataManager pDataManager){
-        activeDataManager = pDataManager;
+    public MainFrame(){
         //Setting up its personal settings
         setTitle(frameTitle);
         setLayout(new BorderLayout());
@@ -114,7 +112,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
                 if (!MaintenanceFrameOpen) {
-                    MaintenanceFrame authenticationFrame = new MaintenanceFrame(activeDataManager);
+                    MaintenanceFrame authenticationFrame = new MaintenanceFrame();
                     authenticationFrame.setVisible(true);
                     MaintenanceFrameOpen = true;
                 }

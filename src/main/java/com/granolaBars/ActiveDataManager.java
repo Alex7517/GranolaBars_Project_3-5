@@ -26,17 +26,24 @@ public class ActiveDataManager {
     final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
-    
+    final private static String MSG_REMOVING_FILE = "Removing File ";
+    final private static String MSG_ADDING_FILE = "Adding File ";
+    final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
+
+    /*
+     * These are used to make the code easier to read
+     */
+    final private static int NO_ID = -1;
+    final private static int ID_DATA_PATH = 0;
+    final private static int ID_DATA_TIMESTAMP = 1;
+    final private static int INDEX_DATA_FILE_ID = 0;
+    final private static int INDEX_DATA_POS = 1;
+    final private static int STARTING_ID = 0;
 
     /*
      * This field holds the file meta data used by the object
      */
     private Map<Integer, String[]> idDATA;
-    
-    /* 
-    * This field holds the largest ID in the map
-    */
-    private static Integer largestId = 0;
     
 
     /*
@@ -367,32 +374,24 @@ public class ActiveDataManager {
      * @param filePath A String that indicates the path of the file to be added
      * @return A int that is the new file id for the added meta data
      */
-    //STUB
-    public Integer addMeta(String filePath){
-        Integer fileId = -1;
-        
-        // Verify file path exists
-        File newFile = new File(filePath);
-        if ( ! newFile.exists() ) {
-            return fileId;
+    private Integer addMeta(String filePath){
+        //Find first unused ID
+        int newID = NO_ID;
+        for(int i = STARTING_ID; newID==NO_ID; i++){
+            if(!idDATA.containsKey(i)){
+                newID = i;
+            }
         }
-        
-        // Gets the next unused ID
-        do { 
-             ActiveDataManager.largestId = ActiveDataManager.largestId +1;
-        } while ( this.idDATA.containsKey(ActiveDataManager.largestId) );    
         
         // Load file properties into array
         String fileProps[] = new String[2];
-        fileProps[0] = filePath;
-        long tmpModDate = newFile.lastModified();
-        SimpleDateFormat tmpFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-        fileProps[1] = tmpFormat.format(tmpModDate);
+        fileProps[ID_DATA_PATH] = filePath;
+        fileProps[ID_DATA_TIMESTAMP] = getFileCurrentTimestamp(filePath);
         
         // Save file properties in map
-        this.idDATA.put(ActiveDataManager.largestId, fileProps);
+        idDATA.put(newID, fileProps);
         
-        return ActiveDataManager.largestId;
+        return newID;
     }
 
     /*
@@ -400,13 +399,9 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the id of the file to be removed
      */
-    //STUB
     private void removeMeta(Integer fileId)
     {
-        if (this.idDATA.containsKey(fileId)) { 
-            this.idDATA.remove(fileId);
-        }
-        return;
+        idDATA.remove(fileId);
     }
 
     /*

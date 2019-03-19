@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         ActiveDataManager.test();
         activeDataManager = new ActiveDataManager("DATA");
-        mainFrame = new MainFrame(activeDataManager);
+        mainFrame = new MainFrame();
         mainFrame.setVisible(true);
     }
 }

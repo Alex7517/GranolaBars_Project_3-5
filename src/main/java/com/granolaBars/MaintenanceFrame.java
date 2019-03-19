@@ -22,10 +22,8 @@ public class MaintenanceFrame extends JFrame{
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
-    ActiveDataManager activeDataManager;
     
-    public MaintenanceFrame(ActiveDataManager pDataManager){
-        activeDataManager = pDataManager;
+    public MaintenanceFrame(){
         //Setting up its personal settings
         setTitle(frameTitle);
         setSize(frameWidth,frameHeight);
