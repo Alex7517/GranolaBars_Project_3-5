@@ -196,7 +196,8 @@ public class MainFrame extends JFrame {
 
         // Need to make an about tab & page
     }
-
+        //Table will not update like this in final product. This
+        // will have to be changed or removed.
     void updateTable(Object[][] data) {
         searchResult.setModel(new DefaultTableModel(data, columnsNames));
     }
