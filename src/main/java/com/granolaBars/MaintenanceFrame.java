@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 
 public class MaintenanceFrame extends JFrame{
@@ -52,17 +53,7 @@ public class MaintenanceFrame extends JFrame{
         add(StatusLabel);
        
         //Add file button
-        AddFileButton = new JButton("Add File");  
-        AddFileButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                JFileChooser FileSelect = new JFileChooser();
-                FileSelect.showOpenDialog(null);
-                File f = FileSelect.getSelectedFile();
-                //FileIndexDBManager.createFile(f.getName(), f.getAbsolutePath(), new Date(f.lastModified()));
-            }
-        });
+        AddFileButton = new JButton("Add File");
         AddFileButton.setMnemonic(KeyEvent.VK_A);
         AddFileButton.setSize(100, 30);
         AddFileButton.setLocation(75, 390);
@@ -137,7 +128,17 @@ public class MaintenanceFrame extends JFrame{
     }
 
     private void doAddFile() {
-        System.out.println(AddFileButton.getText() + " button pressed");
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.addData(tmpPath);
     }
 
     private void doRebuild() {
@@ -145,7 +146,17 @@ public class MaintenanceFrame extends JFrame{
     }
 
     private void doRemoveSelected() {
-        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.removeData(tmpPath);
     }
 
     private void doReset() {

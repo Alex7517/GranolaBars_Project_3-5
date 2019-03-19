@@ -3,6 +3,7 @@ package com.granolaBars;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,6 +27,7 @@ public class ActiveDataManager {
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
     final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
     final private static String MSG_PATH_NOT_IN_IDDATA = "File not in index ";
+    final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
 
     /*
      * These are used to make the code easier to read
@@ -293,7 +295,7 @@ public class ActiveDataManager {
      * A method that will return the id within the meta data for the given path
      *
      * @param filePath A String that indicates what file path is checked
-     * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
+     * @return A int that is the file id associated to the specific path, returns -1 if it does not exist
      */
     //STUB
     int getFileId(String filePath){
@@ -371,9 +373,24 @@ public class ActiveDataManager {
      * @param filePath A String that indicates the path of the file to be added
      * @return A int that is the new file id for the added meta data
      */
-    //STUB
     private Integer addMeta(String filePath){
-        return 1;
+        //Find first unused ID
+        int newID = NO_ID;
+        for(int i = STARTING_ID; newID==NO_ID; i++){
+            if(!idDATA.containsKey(i)){
+                newID = i;
+            }
+        }
+
+        // Load file properties into array
+        String fileProps[] = new String[2];
+        fileProps[ID_DATA_PATH] = filePath;
+        fileProps[ID_DATA_TIMESTAMP] = getFileCurrentTimestamp(filePath);
+
+        // Save file properties in map
+        idDATA.put(newID, fileProps);
+
+        return newID;
     }
 
     /*
@@ -381,9 +398,9 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the id of the file to be removed
      */
-    //STUB
-    private void removeMeta(Integer fileId){
-
+    private void removeMeta(Integer fileId)
+    {
+        idDATA.remove(fileId);
     }
 
     /*
@@ -422,4 +439,15 @@ public class ActiveDataManager {
      */
     //STUB
     void verifyDataIntegrity(){}
+
+    /**
+     * A method that will get the current timestamp of a file
+     *
+     * @param filePath The path of the file to get the timestamp from
+     * @return returns the current timestamp of a file
+     */
+    String getFileCurrentTimestamp(String filePath){
+        SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_Format);
+        return timestampFormat.format(new File(filePath).lastModified());
+    }
 }
