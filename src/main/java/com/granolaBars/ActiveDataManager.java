@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.io.InvalidObjectException;
 import java.util.*;
 
 /**
@@ -145,8 +146,9 @@ public class ActiveDataManager {
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
-        verifyDataIntegrity();
-        updateData();
+        if (verifyDataIntegrity()) {
+            updateData();
+        }
     }
 
     /**
@@ -295,11 +297,11 @@ public class ActiveDataManager {
      * A method that will return the id within the meta data for the given path
      *
      * @param filePath A String that indicates what file path is checked
-     * @return A int that is the file id associated to the specific path, returns -1 if it does not exist
+     * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
     //STUB
     int getFileId(String filePath){
-        return -1;
+        return NO_ID;
     }
 
     /**
@@ -435,10 +437,25 @@ public class ActiveDataManager {
 
     /**
      * A method that verify the data loaded to see if there is any errors with the data structure
-     *
+     * @return True is data structure has no errors or false otherwise
      */
-    //STUB
-    void verifyDataIntegrity(){}
+    boolean verifyDataIntegrity() {
+        Set<String> words = indexDATA.keySet();
+        // for each index
+        for (String word: words) {
+            List<Integer[]> index = indexDATA.get(word);
+            // for each pair file_id - data_pos
+            for (Integer[] pair: index){
+                int fileId = pair[INDEX_DATA_FILE_ID];
+                // check if this file_id contains in metadata map
+                if (!idDATA.containsKey(fileId)) {
+                    return false;
+                }
+            }
+        }
+        // integrity OK
+        return true;
+    }
 
     /**
      * A method that will get the current timestamp of a file
