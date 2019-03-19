@@ -239,12 +239,12 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the file ID that needs to be checked from the active data
      */
-    private void updateDataPrivate(int fileId, String fileDOM){
+    private void updateDataPrivate(int fileId){
         String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
             removeDataPrivate(fileId);
         }
-        else if(!checkFileisUTD(fileId, fileDOM)){
+        else if(!checkFileisUTD(fileId)){
             removeDataPrivate(fileId);
             addDataPrivate(filePath);
         }
@@ -272,9 +272,11 @@ public class ActiveDataManager {
      * @return A boolean that indicates if the file is UTD
      */
     //STUB
-    boolean checkFileisUTD(int fileId, String fileDOM) {
-
-        if(idDATA.get(fileId)[1].equals(fileDOM))
+    boolean checkFileisUTD(int fileId) {
+        String savedTimeStamp = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+        File file = new File(idDATA.get(fileId)[ID_DATA_PATH]);
+        String fileTimeStamp = new Date(file.lastModified()).toString();
+        if(savedTimeStamp.equals(fileTimeStamp))
             return true;
         else return false;
 
@@ -304,7 +306,7 @@ public class ActiveDataManager {
 
         for (int fileId: idDATA.keySet())
         {
-            if(idDATA.get(fileId)[0].equals(filePath)) {
+            if(idDATA.get(fileId)[ID_DATA_PATH].equals(filePath)){
                 return fileId;
             }
         }

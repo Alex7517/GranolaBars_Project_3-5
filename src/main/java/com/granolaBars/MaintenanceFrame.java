@@ -108,7 +108,7 @@ public class MaintenanceFrame extends JFrame{
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
-                Main.mainFrame.MaintenanceFrameOpen = false;
+                Main.mainFrame.maintenanceFrameOpen = false;
             }
         });
 

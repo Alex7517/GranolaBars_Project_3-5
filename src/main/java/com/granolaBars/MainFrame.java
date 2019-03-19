@@ -22,10 +22,9 @@ public class MainFrame extends JFrame {
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File", "Status"};
-    private MaintenanceFrame maintenanceFrameOpen;
     private DefaultTableModel tableModel;
 
-    public boolean MaintenanceFrameOpen = false;
+    public boolean maintenanceFrameOpen = false;
 
     public MainFrame(){
         //Setting up its personal settings
@@ -114,10 +113,9 @@ public class MainFrame extends JFrame {
         maintenanceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //This is to prevent multiple AuthenticationFrames/MaintenanceFrames open at the same time
-                if (!MaintenanceFrameOpen) {
-                    maintenanceFrameOpen = new MaintenanceFrame();
-                    maintenanceFrameOpen.setVisible(true);
-                    MaintenanceFrameOpen = true;
+                if (!maintenanceFrameOpen) {
+                    Main.maintenanceFrame.setVisible(true);
+                    maintenanceFrameOpen = true;
                 }
             }
         });
