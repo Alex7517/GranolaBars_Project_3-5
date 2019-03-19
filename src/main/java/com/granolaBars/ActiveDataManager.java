@@ -445,4 +445,15 @@ public class ActiveDataManager {
      */
     //STUB
     void verifyDataIntegrity(){}
+
+    /**
+     * A method that will get the current timestamp of a file
+     *
+     * @param filePath The path of the file to get the timestamp from
+     * @return returns the current timestamp of a file
+     */
+    String getFileCurrentTimestamp(String filePath){
+        SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_Format);
+        return timestampFormat.format(new File(filePath).lastModified());
+    }
 }

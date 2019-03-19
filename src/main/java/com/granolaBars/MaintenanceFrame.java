@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 
 public class MaintenanceFrame extends JFrame{
@@ -105,10 +106,7 @@ public class MaintenanceFrame extends JFrame{
 
         AddFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFileChooser FileSelect = new JFileChooser();
-                FileSelect.showOpenDialog(null);
-                File f = FileSelect.getSelectedFile();               
-                doAddFile(f);
+                doAddFile();
             }
         });
 
@@ -131,9 +129,18 @@ public class MaintenanceFrame extends JFrame{
         });
     }
 
-    private void doAddFile(File f) {
-        String tmpPath = f.getAbsolutePath();
-        Integer tmpId = activeDataManager.addMeta(tmpPath);
+    private void doAddFile() {
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.addData(tmpPath);
     }
 
     private void doRebuild() {
@@ -141,7 +148,17 @@ public class MaintenanceFrame extends JFrame{
     }
 
     private void doRemoveSelected() {
-        System.out.println(RemoveSelectedFilesButton.getText() + " button pressed");
+        JFileChooser FileSelect = new JFileChooser();
+        FileSelect.showOpenDialog(this);
+        File f = FileSelect.getSelectedFile();
+        String tmpPath;
+        try {
+            tmpPath = f.getCanonicalPath();
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        Main.activeDataManager.removeData(Main.activeDataManager.getFileId(tmpPath));
     }
 
     private void doReset() {
