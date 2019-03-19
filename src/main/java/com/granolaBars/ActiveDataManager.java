@@ -147,7 +147,7 @@ public class ActiveDataManager {
         this.PD_FILE_NAME = PD_FILE_NAME;
         loadData();
         if (verifyDataIntegrity()) {
-            updateData();
+            updateAllData();
         }
     }
 
@@ -156,9 +156,8 @@ public class ActiveDataManager {
      * then holds the data to the objects active data fields
      */
     void loadData(){
-        Map[] dataReturn = new Map[2];
         try{
-            dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
+            Map[] dataReturn = PersistentDataManager.loadData(PD_FILE_NAME);
 
             //ID
             idDATA = (Map<Integer, String[]>) dataReturn[0];
@@ -204,7 +203,6 @@ public class ActiveDataManager {
             if (DEBUG_MODE){System.out.println("***IDK how, but you found it!\n***Let me know how!");}
             throw new RuntimeException(e);
         }
-        updateGUI();
     }
 
     /**
@@ -212,13 +210,14 @@ public class ActiveDataManager {
      * if they do not exist, then the files data is removed
      * if they are not UTD, then they are updated
      */
-    void updateData(){
+    void updateAllData(){
         //This creates a copy of the maps keys, allowing up to add and remove keys from the map in this loop
         List<Integer> idDataKeys = new ArrayList<>(idDATA.keySet());
         for(int fileId: idDataKeys){
             updateDataPrivate(fileId);
         }
         saveDATA();
+        updateGUI();
     }
 
     /**
@@ -231,6 +230,7 @@ public class ActiveDataManager {
     void updateData(int fileId){
         updateDataPrivate(fileId);
         saveDATA();
+        updateGUI();
     }
 
     /*
@@ -324,6 +324,7 @@ public class ActiveDataManager {
     void addData(String filePath){
         addDataPrivate(filePath);
         saveDATA();
+        updateGUI();
     }
 
     /*
@@ -364,6 +365,7 @@ public class ActiveDataManager {
         else{
             removeDataPrivate(fileId);
             saveDATA();
+            updateGUI();
         }
     }
 

@@ -7,6 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         mainFrame = new MainFrame();
+        maintenanceFrame = new MaintenanceFrame();
         activeDataManager = new ActiveDataManager();
         mainFrame.setVisible(true);
     }
