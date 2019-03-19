@@ -23,13 +23,17 @@ public class ActiveDataManager {
      */
     final private static boolean DEBUG_MODE = true;
     final private static String MSG_DATALOADED = "DATA loaded";
-    final private static String MSG_MISSING_FILE = "Could not find the file named ";
-    final private static String MSG_CREATING_FILE = "Creating a empty data file named ";
+    final private static String MSG_MISSING_DATA_FILE = "Could not find data file: ";
+    final private static String MSG_CREATING_DATA_FILE = "Creating a empty data file named: ";
     final private static String MSG_CORRUPT_DATA = "Corrupt Data ";
-    final private static String MSG_CANT_READ_FILE = "Could not read the file named ";
-    final private static String MSG_PATH_NOT_IN_IDDATA = "File not in index ";
-    final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
+    final private static String MSG_CANT_READ_FILE = "Could not read the file: ";
+    final private static String MSG_PATH_NOT_IN_IDDATA = " was not in index";
     final private static String MSG_ERROR_CURRUPT_DATA_STRUCTURE = "Corruption found in the data files";
+    final private static String MSG_DATA_ADDED = " was added";
+    final private static String MSG_DATA_REMOVED = " was removed";
+    final private static String MSG_DATA_ALREADY_EXISTS = " already exists in index";
+    final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
+    final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
 
     /*
      * These are used to make the code easier to read
@@ -40,6 +44,7 @@ public class ActiveDataManager {
     final private static int INDEX_DATA_FILE_ID = 0;
     final private static int INDEX_DATA_POS = 1;
     final private static int STARTING_ID = 0;
+    final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
 
     /*
      * This field holds the file meta data used by the object
@@ -172,10 +177,10 @@ public class ActiveDataManager {
         }
         catch (FileNotFoundException e){
             //This is if the file could not be found, such as the first time it was ran
-            if (DEBUG_MODE){System.out.println(MSG_MISSING_FILE + PD_FILE_NAME);}
+            if (DEBUG_MODE){System.out.println(MSG_MISSING_DATA_FILE + PD_FILE_NAME);}
 
             //Creating a new empty file
-            if (DEBUG_MODE){System.out.println(MSG_CREATING_FILE + PD_FILE_NAME);}
+            if (DEBUG_MODE){System.out.println(MSG_CREATING_DATA_FILE + PD_FILE_NAME);}
             saveDATA();
 
             //POTENTIAL ERROR HERE, We will need to make sure there is no chance of infinite loop.
@@ -250,9 +255,11 @@ public class ActiveDataManager {
     private void updateDataPrivate(int fileId){
         String filePath = idDATA.get(fileId)[ID_DATA_PATH];
         if(!checkFileExists(filePath)){
+            if (DEBUG_MODE){System.out.println(MSG_MISSING_DATA_FILE+filePath);}
             removeDataPrivate(fileId);
         }
         else if(!checkFileisUTD(fileId)){
+            if (DEBUG_MODE){System.out.println(MSG_FILE_NOT_UTD+filePath);}
             removeDataPrivate(fileId);
             addDataPrivate(filePath);
         }
@@ -281,11 +288,13 @@ public class ActiveDataManager {
      */
     boolean checkFileisUTD(int fileId) {
         String savedTimeStamp = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
-        File file = new File(idDATA.get(fileId)[ID_DATA_PATH]);
-        String fileTimeStamp = new Date(file.lastModified()).toString();
-        if(savedTimeStamp.equals(fileTimeStamp))
+        String fileTimeStamp = getFileCurrentTimestamp(idDATA.get(fileId)[ID_DATA_PATH]);
+        if(savedTimeStamp.equals(fileTimeStamp)){
             return true;
-        else return false;
+        }
+        else{
+            return false;
+        }
 
     }
 
@@ -344,13 +353,16 @@ public class ActiveDataManager {
             if(!checkFileMetaExists(filePath)){
                 Integer fileId = addMeta(filePath);
                 addWords(fileId, filePath);
+                if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ADDED);}
             }
             else{
+                if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ALREADY_EXISTS);}
                 //If the file already exists then what do we do
                 //Do we ignore it or update it
             }
         }
         else{
+            if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_DOES_NOT_EXIST);}
             //If the file does not exist then what do we do
             //Do we ignore it or throw an error
         }
@@ -364,7 +376,7 @@ public class ActiveDataManager {
     void removeData(String filePath){
         int fileId = getFileId(filePath);
         if(fileId==-1) {
-            if (DEBUG_MODE){System.out.println(MSG_PATH_NOT_IN_IDDATA+filePath);}
+            if (DEBUG_MODE){System.out.println(filePath+MSG_PATH_NOT_IN_IDDATA);}
         }
         else{
             removeDataPrivate(fileId);
@@ -383,6 +395,7 @@ public class ActiveDataManager {
      */
     private void removeDataPrivate(int fileId){
         //I dont think we need to check if data actually exists, but we may
+        if (DEBUG_MODE){System.out.println(idDATA.get(fileId)[ID_DATA_PATH]+MSG_DATA_REMOVED);}
         removeWords(fileId);
         removeMeta(fileId);
     }
