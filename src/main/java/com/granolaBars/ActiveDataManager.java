@@ -19,11 +19,11 @@ public class ActiveDataManager {
     final private static String DEFAULT_PD_FILE_NAME = "DATA";
 
     /**
-     *
+     * This is a list of updatableGUIs that will be updated when the data is changed
      */
     private List<updatableGUI> displayGUIList;
 
-    /*
+    /**
      * These are simple Strings used for debug output
      */
     final public static boolean DEBUG_MODE = true;
@@ -40,7 +40,7 @@ public class ActiveDataManager {
     final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
     final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
 
-    /*
+    /**
      * These are used to make the code easier to read
      */
     final private static int NO_ID = -1;
@@ -51,12 +51,12 @@ public class ActiveDataManager {
     final private static int STARTING_ID = 0;
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
 
-    /*
+    /**
      * This field holds the file meta data used by the object
      */
     private Map<Integer, String[]> idDATA;
 
-    /*
+    /**
      * This field holds the file index data used by the object
      */
     private Map<String, List<Integer[]>> indexDATA;
@@ -128,7 +128,7 @@ public class ActiveDataManager {
         }
     }
 
-    /*
+    /**
      * A method that will save the objects active data fields,
      * to the persistent data using the PersistentDataManager class
      */
@@ -171,7 +171,7 @@ public class ActiveDataManager {
         updateGUI();
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what updateData(int fileId) says it does
      *
@@ -245,7 +245,6 @@ public class ActiveDataManager {
      * @param filePath A String that indicates what file path is checked
      * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
-    //STUB
     public int getFileId(String filePath) {
 
         for (int fileId: idDATA.keySet())
@@ -268,7 +267,7 @@ public class ActiveDataManager {
         updateGUI();
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what addData(String filePath) says it does
      *
@@ -313,7 +312,7 @@ public class ActiveDataManager {
         }
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what removeData(int fileId) says it does
      *
@@ -328,7 +327,7 @@ public class ActiveDataManager {
         removeMeta(fileId);
     }
 
-    /*
+    /**
      * A method that will add a files meta data to the active idDATA
      *
      * @param filePath A String that indicates the path of the file to be added
@@ -354,7 +353,7 @@ public class ActiveDataManager {
         return newID;
     }
 
-    /*
+    /**
      * A method that will remove a files meta data from the active idDATA
      *
      * @param fileId An int that indicates the id of the file to be removed
@@ -364,7 +363,7 @@ public class ActiveDataManager {
         idDATA.remove(fileId);
     }
 
-    /*
+    /**
      * A method that will add a files words data to the active indexData
      *
      * @param fileId An int is the id for the file meta data of the new words
@@ -375,7 +374,7 @@ public class ActiveDataManager {
 
     }
 
-    /*
+    /**
      * A method that will remove a files words from the active indexData
      *
      * @param fileId An int that indicates the id of the file to have its words removed
@@ -438,15 +437,29 @@ public class ActiveDataManager {
         return timestampFormat.format(new File(filePath).lastModified());
     }
 
+    /**
+     * This method will add a GUI to the list of updatableGUI that would receive a Object[][] to load into a Jtable
+     * @param displayGUI the updatableGUI object that will be added to the list of GUIs
+     */
     public void addDisplayGUI(updatableGUI displayGUI) {
         this.displayGUIList.add(displayGUI);
         updateGUI();
     }
 
+    /**
+     * This method will add a list of GUI to the list of updatableGUI that would receive a Object[][] to load into a Jtable
+     * @param displayGUIList a list of updatableGUI objects that will be added to the list of GUIs
+     */
     public void addDisplayGUI(List<updatableGUI> displayGUIList) {
         this.displayGUIList.addAll(displayGUIList);
         updateGUI();
     }
 
-
+    /**
+     * This method will remove a GUI to the list of updatableGUI so that it would not receive a Object[][]
+     * @param displayGUI
+     */
+    public void removeDisplayGUI(updatableGUI displayGUI){
+        this.displayGUIList.remove(displayGUI);
+    }
 }
