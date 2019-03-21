@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 
-public class MaintenanceFrame extends JFrame{
+public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JLabel MaintenanceFormHeader;
      private JLabel FileNameLabel;
      private JLabel StatusLabel;
@@ -117,8 +117,8 @@ public class MaintenanceFrame extends JFrame{
         });
     }
 
-    void updateTable(Object[][] data) {
-        FileNameAndStatus.setModel(new DefaultTableModel(data, columnsNames));
+    public void updateTable(Object[][] tableData) {
+        FileNameAndStatus.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
     private void doAddFile() {

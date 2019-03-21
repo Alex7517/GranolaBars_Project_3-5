@@ -18,6 +18,11 @@ public class ActiveDataManager {
     final public String PD_FILE_NAME;
     final private static String DEFAULT_PD_FILE_NAME = "DATA";
 
+    /**
+     *
+     */
+    private List<updatableGUI> displayGUIList;
+
     /*
      * These are simple Strings used for debug output
      */
@@ -74,6 +79,7 @@ public class ActiveDataManager {
      */
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
+        this.displayGUIList = new ArrayList<>();
         loadData();
         if (verifyDataIntegrity()) {
             updateAllData();
@@ -393,10 +399,10 @@ public class ActiveDataManager {
             i++;
         }
 
-        Main.maintenanceFrame.updateTable(data);
-         //Table will not update like this in final product. This
-        // will have to be changed or removed.
-        Main.mainFrame.updateTable(data);
+        for(updatableGUI GUI: displayGUIList)
+        {
+            GUI.updateTable(data);
+        }
     }
 
     /**
@@ -431,4 +437,16 @@ public class ActiveDataManager {
         SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_Format);
         return timestampFormat.format(new File(filePath).lastModified());
     }
+
+    public void addDisplayGUI(updatableGUI displayGUI) {
+        this.displayGUIList.add(displayGUI);
+        updateGUI();
+    }
+
+    public void addDisplayGUI(List<updatableGUI> displayGUIList) {
+        this.displayGUIList.addAll(displayGUIList);
+        updateGUI();
+    }
+
+
 }

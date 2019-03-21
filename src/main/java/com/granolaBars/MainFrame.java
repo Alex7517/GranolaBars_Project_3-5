@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements updatableGUI{
     //MainFrames default settings
     String frameTitle = "The Granola Bar Search Engine";
     int frameWidth = 600;
@@ -198,8 +198,8 @@ public class MainFrame extends JFrame {
     }
         //Table will not update like this in final product. This
         // will have to be changed or removed.
-    void updateTable(Object[][] data) {
-        searchResult.setModel(new DefaultTableModel(data, columnsNames));
+    public void updateTable(Object[][] tableData) {
+        searchResult.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
     private void doSearch() {
