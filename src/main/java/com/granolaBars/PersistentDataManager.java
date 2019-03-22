@@ -10,6 +10,9 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is used to save and load maps to and from text files using JSON.
+ */
 public class PersistentDataManager {
     final static private String ID = "IDs";
     final static private String INDEX = "Index";

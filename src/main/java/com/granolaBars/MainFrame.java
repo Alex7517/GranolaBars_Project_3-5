@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * This class is used to create and manage the main window, which allows the user to search the index and read see the results
+ */
 public class MainFrame extends JFrame implements updatableGUI{
     //MainFrames default settings
     String frameTitle = "The Granola Bar Search Engine";
