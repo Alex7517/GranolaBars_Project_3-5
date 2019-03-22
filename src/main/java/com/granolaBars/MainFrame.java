@@ -5,6 +5,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is used to create and manage the main window, which allows the user to search the index and read see the results
@@ -19,7 +22,7 @@ public class MainFrame extends JFrame implements updatableGUI{
     private JPanel panel, panel2;
     private JLabel label;
     private JButton searchButton, maintenanceButton, aboutButton;
-    private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
+    private JRadioButton radioButtonMOr, radioButtonMAnd, radioButtonMPHRASE ;
     private JTextField  searchBarTextField;
     private JTable searchResult;
     private JScrollPane searchScrollPane;
@@ -78,25 +81,25 @@ public class MainFrame extends JFrame implements updatableGUI{
             }
         });
 
-        radioButtonMAll = new JRadioButton("match all");
-        radioButtonMAll.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMAll.addActionListener(new ActionListener() {
+        radioButtonMOr = new JRadioButton("OR");
+        radioButtonMOr.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMOr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchAll();
             }
         });
 
-        radioButtonMAny = new JRadioButton("match any");
-        radioButtonMAny.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMAny.addActionListener(new ActionListener() {
+        radioButtonMAnd = new JRadioButton("AND");
+        radioButtonMAnd.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMAnd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchAny();
             }
         });
 
-        radioButtonMExactly = new JRadioButton("match exactly");
-        radioButtonMExactly.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMExactly.addActionListener(new ActionListener() {
+        radioButtonMPHRASE = new JRadioButton("PHRASE");
+        radioButtonMPHRASE.setFont(new Font("Calibri", Font.BOLD, 14));
+        radioButtonMPHRASE.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doMatchExactly();
             }
@@ -104,9 +107,9 @@ public class MainFrame extends JFrame implements updatableGUI{
 
         //Add Radio Button Group
         buttonGroup = new ButtonGroup();
-        buttonGroup.add(radioButtonMAll);
-        buttonGroup.add(radioButtonMAny);
-        buttonGroup.add(radioButtonMExactly);
+        buttonGroup.add(radioButtonMOr);
+        buttonGroup.add(radioButtonMAnd);
+        buttonGroup.add(radioButtonMPHRASE);
 
 
         // rows, columns, table and scrollable pane to view search result
@@ -169,13 +172,13 @@ public class MainFrame extends JFrame implements updatableGUI{
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(radioButtonMAll, gbc);
+        panel.add(radioButtonMOr, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(radioButtonMAny, gbc);
+        panel.add(radioButtonMAnd, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        panel.add(radioButtonMExactly, gbc);
+        panel.add(radioButtonMPHRASE, gbc);
 
         // This panel contains the search results, scroll pane and maintenance button
         add(panel2,BorderLayout.SOUTH);
@@ -205,20 +208,42 @@ public class MainFrame extends JFrame implements updatableGUI{
         searchResult.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
+    /**
+     * This method will manage calling the appropriate search method and update the table
+     */
+    //STUB
     private void doSearch() {
         System.out.println(searchButton.getText() + " button pressed");
+        //Organize the searchButtons text into a list
+
+        //Call the correct method for the search selected
+        if(radioButtonMOr.isSelected()){
+            System.out.println("OR");
+            updateTable(Main.activeDataManager.searchDataOr(new HashSet<String>()));
+        }
+        else if(radioButtonMAnd.isSelected()){
+            System.out.println("And");
+            updateTable(Main.activeDataManager.searchDataAnd(new HashSet<String>()));
+        }
+        else if(radioButtonMPHRASE.isSelected()){
+            System.out.println("Phrase");
+            updateTable(Main.activeDataManager.searchDataPhrase(new ArrayList<String>()));
+        }
+        else{
+            System.out.println("Nothing");
+        }
     }
 
     private void doMatchAll() {
-        System.out.println(radioButtonMAll.getText() + " button pressed");
+        System.out.println(radioButtonMOr.getText() + " button pressed");
     }
 
     private void doMatchAny() {
-        System.out.println(radioButtonMAny.getText() + " button pressed");
+        System.out.println(radioButtonMAnd.getText() + " button pressed");
     }
 
     private void doMatchExactly() {
-        System.out.println(radioButtonMExactly.getText() + " button pressed");
+        System.out.println(radioButtonMPHRASE.getText() + " button pressed");
     }
 
     private void doAbout() {

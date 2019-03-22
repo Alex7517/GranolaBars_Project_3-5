@@ -461,4 +461,34 @@ public class ActiveDataManager {
     public void removeDisplayGUI(updatableGUI displayGUI){
         this.displayGUIList.remove(displayGUI);
     }
+
+    /**
+     * This method will perform a OR search through the index data and return the data
+     * @param searchedWords a set of words that contain every word to look for
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    //STUB
+    public Object[][] searchDataOr(Set<String> searchedWords){
+        return new Object[1][1];
+    }
+
+    /**
+     * This method will perform a AND search through the index data and return the data
+     * @param searchedWords a set of words that contain every word to look for
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    //STUB
+    public Object[][] searchDataAnd(Set<String> searchedWords){
+        return new Object[1][1];
+    }
+
+    /**
+     * This method will perform a PHRASE search through the index data and return the data
+     * @param searchedWords a list of words that contain every word to look for, the of the list if important
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    //STUB
+    public Object[][] searchDataPhrase(List<String> searchedWords){
+        return new Object[1][1];
+    }
 }
