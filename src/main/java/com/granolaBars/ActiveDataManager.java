@@ -371,6 +371,9 @@ public class ActiveDataManager {
     //STUB
     private void addWords(int fileId, String filePath){
 
+        /*
+        you likely do stuff
+         */
     }
 
     /**
@@ -380,7 +383,13 @@ public class ActiveDataManager {
      */
     //STUB
     private void removeWords(int fileId){
-
+        //Create a temp copy of keys to use in forloop, to prevent errors
+        //for each word in indexData
+            //For each in list for word
+                //see if word is in fileID
+                    //Remove that word instance from list
+                    //if no more word instances in list
+                        //remove the word from indexData
     }
 
     /**
@@ -469,7 +478,11 @@ public class ActiveDataManager {
      */
     //STUB
     public Object[][] searchDataOr(Set<String> searchedWords){
-        return new Object[1][1];
+        //for each searchedWords word
+            //Find all instances in indexData of that word with for loop
+                //Save the fileID of found word to a set
+        //pass set of fileID to buildJtableData
+        return buildJtableData(new HashSet<Integer>());
     }
 
     /**
@@ -479,7 +492,16 @@ public class ActiveDataManager {
      */
     //STUB
     public Object[][] searchDataAnd(Set<String> searchedWords){
-        return new Object[1][1];
+        //Create a list of sets
+        //for each searchedWords word
+            //Find all instances in indexData of that word with for loop
+                //Save the fileID of found word to a set
+                //Save the set to the next position on the list of sets
+        //for each set in list of sets
+            //Intersect sets together
+                //stop once done with all set or (if 0 fileID left if set)exta good
+        //pass set of fileID to buildJtableData
+        return buildJtableData(new HashSet<Integer>());
     }
 
     /**
@@ -490,5 +512,15 @@ public class ActiveDataManager {
     //STUB
     public Object[][] searchDataPhrase(List<String> searchedWords){
         return new Object[1][1];
+    }
+
+    /**
+     * This method will create a Object[][] from a Set of file IDs
+     * @param foundFiles a set of file IDs that need to be added int the return array
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    //STUB
+    public Object[][] buildJtableData(Set<Integer> foundFiles){
+        return buildJtableData(new HashSet<Integer>());
     }
 }
