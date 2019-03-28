@@ -369,27 +369,64 @@ public class ActiveDataManager {
      * @param filePath A String that indicates the path to the file to be added
      */
     //STUB
-    private void addWords(int fileId, String filePath){
+    private HashSet<String> addWords(int fileId, String filePath)
+       {
+        String lineOfText;
+        String[] linesOfWords;
+        int lineCount = 1;
+        HashSet<String> wordSet = new HashSet<String>(); 
+        File infile = null;
+        Scanner scn = null;
+            
+        try
+        {
+            infile = new File(filePath);
+            scn = new Scanner(infile);
+            
+            
+            while (scn.hasNextLine())
+            {
+            	lineOfText = scn.nextLine();
+            	lineOfText.toLowerCase();
+            	linesOfWords = lineOfText.split("\\s+");
 
-        /*
-        you likely do stuff
-         */
+            	for (String word : linesOfWords)
+            	{
+                	if (word.length() > 0)
+                    		wordSet.add(word);
+                }
+            	lineCount++;
+            }
+            
+         }
+         catch (IOException e)
+         {
+        	System.out.println("Invalid file name");
+        	System.out.println(e.getMessage());
+         }
+        finally
+        {
+	    scn.close(); 
+            scn = null;
+            infile = null;
+        }
+        System.out.println(wordSet.toString());
+	return wordSet;
     }
-
-    /**
+ 
+    /*
      * A method that will remove a files words from the active indexData
      *
      * @param fileId An int that indicates the id of the file to have its words removed
      */
     //STUB
     private void removeWords(int fileId){
-        //Create a temp copy of keys to use in forloop, to prevent errors
-        //for each word in indexData
-            //For each in list for word
-                //see if word is in fileID
-                    //Remove that word instance from list
-                    //if no more word instances in list
-                        //remove the word from indexData
+        //Check to see if file id exists in indexDATA
+        //if it does, remove entry for that key
+         if  ( indexDATA.containsKey(fileId) )
+         {
+            indexDATA.remove(fileId);
+         }
     }
 
     /**
