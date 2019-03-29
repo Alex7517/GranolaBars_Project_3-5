@@ -382,25 +382,23 @@ public class ActiveDataManager {
      * @param fileId An int that indicates the id of the file to have its words removed
      */
     //STUB
-    // First attempt... not finished - Jason S.
+    // Another attempt on remove words... not finished but getting closer - Jason S.
     private void removeWords(int fileId){
         //Create a temp copy of keys to use in forloop, to prevent errors
         List<String> keyCopies = new ArrayList<>(indexDATA.keySet());
-        List<String> wordInstances = new ArrayList<>();
-        Object file = fileId;
         //for each word in indexData
         for (String word: keyCopies) {
             //For each in list for word
-            for(String instance: wordInstances) {
+            for(int i: idDATA.keySet()) {
                 //see if word is in fileID
-               if(file.equals(instance)) {
+               if(idDATA.get(i).equals(word)) {
                     //Remove that word instance from list
-                    wordInstances.remove(instance);
+                    idDATA.remove(word);
                 }
                 //if no more word instances in list
             }
             //remove the word from indexData
-            keyCopies.remove(word);
+            indexDATA.remove(word);
         }
 
     }
