@@ -490,13 +490,20 @@ public class ActiveDataManager {
      * @return a Object[][] that can be easily loaded into a Jtable
      */
     //STUB
+    // First attempt on searchDataOr... more to come - Jason S.
     public Object[][] searchDataOr(Set<String> searchedWords){
+        List<Set> wordsFound = new ArrayList<>();
         //for each searchedWords word
-        for(int i = 0: searchedWords)
+        for(String listSet: searchedWords) {
             //Find all instances in indexData of that word with for loop
-                //Save the fileID of found word to a set
+            for (int i = 0; i < indexDATA.size() - 1; i++) {
+                if (indexDATA.keySet().equals(listSet))
+                    //Save the fileID of found word to a set
+                    wordsFound.add(indexDATA.keySet());
+            }
+        }
         //pass set of fileID to buildJtableData
-        return buildJtableData(new HashSet<Integer>());
+        return buildJtableData(new HashSet<Integer>(wordsFound));
     }
 
     /**
