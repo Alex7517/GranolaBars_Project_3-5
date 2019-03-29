@@ -393,7 +393,7 @@ public class ActiveDataManager {
             //For each in list for word
             for(String instance: wordInstances) {
                 //see if word is in fileID
-                while(file.equals(instance)) {
+               if(file.equals(instance)) {
                     //Remove that word instance from list
                     wordInstances.remove(instance);
                 }
@@ -504,33 +504,36 @@ public class ActiveDataManager {
      * @param searchedWords a set of words that contain every word to look for
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    // First attempt... not finished - Jason S.
+    // Attempts continued... not finished - Jason S.
     public Object[][] searchDataAnd(Set<String> searchedWords){
         //Create a list of sets
         List<Set> wordSets = new ArrayList<>();
-        Set<Integer> fileIdSet = new HashSet<>();
+
         // for each index
-        for(String word: searchedWords) {
+        for(Set set: wordSets) {
             //for each searchedWords word
-            for(int j = 0; j < indexDATA.size() - 1; j++) {
+            for(String word: searchedWords) {
                 //Find all instances in indexData of that word with for loop
-                if(indexDATA.get(word).equals(searchedWords))
+                for(int i = 0; i < indexDATA.size() - 1; i++) {
                     //Save the fileID of found word to a set
-                    fileIdSet.add(indexDATA.hashCode());
                     //Save the set to the next position on the list of sets
-                    wordSets.add(fileIdSet);
+                    if(indexDATA.containsValue(word))
+                        set = indexDATA.keySet();
+                        wordSets.add(set);
+
+                }
             }
 
         }
         //for each set in list of sets
         for(Set set: wordSets) {
             //Intersect sets together
-            fileIdSet.retainAll(wordSets);
-            set = fileIdSet;
+            wordSets.retainAll(set);
+
         }
 
         //pass set of fileID to buildJtableData
-        return buildJtableData(new HashSet<Integer>());
+        return buildJtableData(new HashSet<Integer>(wordSets));
     }
 
     /**
