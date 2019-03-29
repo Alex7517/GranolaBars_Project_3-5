@@ -391,14 +391,15 @@ public class ActiveDataManager {
             //For each in list for word
             for(int i: idDATA.keySet()) {
                 //see if word is in fileID
-               if(idDATA.get(i).equals(word)) {
+               if(idDATA.get(i).equals(fileId)) {
                     //Remove that word instance from list
                     idDATA.remove(word);
                 }
                 //if no more word instances in list
+
             }
             //remove the word from indexData
-            indexDATA.remove(word);
+                indexDATA.remove(word);
         }
 
     }
