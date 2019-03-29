@@ -382,14 +382,27 @@ public class ActiveDataManager {
      * @param fileId An int that indicates the id of the file to have its words removed
      */
     //STUB
+    // First attempt... not finished - Jason S.
     private void removeWords(int fileId){
         //Create a temp copy of keys to use in forloop, to prevent errors
+        List<String> keyCopies = new ArrayList<>(indexDATA.keySet());
+        List<String> wordInstances = new ArrayList<>();
+        Object file = fileId;
         //for each word in indexData
+        for (String word: keyCopies) {
             //For each in list for word
+            for(String instance: wordInstances) {
                 //see if word is in fileID
+                while(file.equals(instance)) {
                     //Remove that word instance from list
-                    //if no more word instances in list
-                        //remove the word from indexData
+                    wordInstances.remove(instance);
+                }
+                //if no more word instances in list
+            }
+            //remove the word from indexData
+            keyCopies.remove(word);
+        }
+
     }
 
     /**
@@ -479,6 +492,7 @@ public class ActiveDataManager {
     //STUB
     public Object[][] searchDataOr(Set<String> searchedWords){
         //for each searchedWords word
+        for(int i = 0: searchedWords)
             //Find all instances in indexData of that word with for loop
                 //Save the fileID of found word to a set
         //pass set of fileID to buildJtableData
@@ -490,16 +504,31 @@ public class ActiveDataManager {
      * @param searchedWords a set of words that contain every word to look for
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    //STUB
+    // First attempt... not finished - Jason S.
     public Object[][] searchDataAnd(Set<String> searchedWords){
         //Create a list of sets
-        //for each searchedWords word
-            //Find all instances in indexData of that word with for loop
-                //Save the fileID of found word to a set
-                //Save the set to the next position on the list of sets
+        List<Set> wordSets = new ArrayList<>();
+        Set<Integer> fileIdSet = new HashSet<>();
+        // for each index
+        for(String word: searchedWords) {
+            //for each searchedWords word
+            for(int j = 0; j < indexDATA.size() - 1; j++) {
+                //Find all instances in indexData of that word with for loop
+                if(indexDATA.get(word).equals(searchedWords))
+                    //Save the fileID of found word to a set
+                    fileIdSet.add(indexDATA.hashCode());
+                    //Save the set to the next position on the list of sets
+                    wordSets.add(fileIdSet);
+            }
+
+        }
         //for each set in list of sets
+        for(Set set: wordSets) {
             //Intersect sets together
-                //stop once done with all set or (if 0 fileID left if set)exta good
+            fileIdSet.retainAll(wordSets);
+            set = fileIdSet;
+        }
+
         //pass set of fileID to buildJtableData
         return buildJtableData(new HashSet<Integer>());
     }
