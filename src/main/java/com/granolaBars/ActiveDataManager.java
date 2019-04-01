@@ -389,7 +389,7 @@ public class ActiveDataManager {
                 //Read the line
             	lineOfText = scn.nextLine();
             	//Convert line to all caps to remove cap sensitivity
-            	lineOfText.toUpperCase();
+                lineOfText = lineOfText.toUpperCase();
             	//Split the line into a list of words
             	linesOfWords = lineOfText.split("\\s+");
                 //For each word

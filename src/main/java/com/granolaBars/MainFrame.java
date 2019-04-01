@@ -5,9 +5,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 /**
  * This class is used to create and manage the main window, which allows the user to search the index and read see the results
@@ -215,19 +214,26 @@ public class MainFrame extends JFrame implements updatableGUI{
     private void doSearch() {
         System.out.println(searchButton.getText() + " button pressed");
         //Organize the searchButtons text into a list
+        String searchedWordsString = searchBarTextField.getText();
+        //Convert line to all caps to remove cap sensitivity
+        searchedWordsString = searchedWordsString.toUpperCase();
+        //Split the line into a list of words
+        List searchedWordsList = new ArrayList(Arrays.asList(searchedWordsString.split("\\s+")));
+
+        System.out.println(searchedWordsList);
 
         //Call the correct method for the search selected
         if(radioButtonMOr.isSelected()){
             System.out.println("OR");
-            updateTable(Main.activeDataManager.searchDataOr(new HashSet<String>()));
+            updateTable(Main.activeDataManager.searchDataOr(new HashSet<String>(searchedWordsList)));
         }
         else if(radioButtonMAnd.isSelected()){
             System.out.println("And");
-            updateTable(Main.activeDataManager.searchDataAnd(new HashSet<String>()));
+            updateTable(Main.activeDataManager.searchDataAnd(new HashSet<String>(searchedWordsList)));
         }
         else if(radioButtonMPHRASE.isSelected()){
             System.out.println("Phrase");
-            updateTable(Main.activeDataManager.searchDataPhrase(new ArrayList<String>()));
+            updateTable(Main.activeDataManager.searchDataPhrase(searchedWordsList));
         }
         else{
             System.out.println("Nothing");
