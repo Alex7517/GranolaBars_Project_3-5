@@ -368,12 +368,58 @@ public class ActiveDataManager {
      * @param fileId An int is the id for the file meta data of the new words
      * @param filePath A String that indicates the path to the file to be added
      */
-    //STUB
-    private void addWords(int fileId, String filePath){
+    private void addWords(int fileId, String filePath)
+       {
+        String lineOfText;
+        String[] linesOfWords;
+        File infile;
+        Scanner scn = null;
+        int wordPos = 0;
 
-        /*
-        you likely do stuff
-         */
+        try
+        {
+            //Open the file
+            infile = new File(filePath);
+            //Place file into a inputSteam
+            scn = new Scanner(infile);
+
+            //While file has a line to read
+            while (scn.hasNextLine())
+            {
+                //Read the line
+            	lineOfText = scn.nextLine();
+            	//Convert line to all caps to remove cap sensitivity
+            	lineOfText.toUpperCase();
+            	//Split the line into a list of words
+            	linesOfWords = lineOfText.split("\\s+");
+                //For each word
+            	for (String word : linesOfWords)
+            	{
+            	    //See if its a proper word
+                	if (word.length() > 0){
+                        //See if word already exists in indexData
+                        if(!indexDATA.containsKey(word)){
+                            //If not, create the key and the list value, and add it to the map
+                            indexDATA.put(word, new LinkedList<Integer[]>());
+                        }
+                        //Create Integer[] of this words data, and it to indexData
+                        indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                    }
+                	//Increase POS for next word
+                    wordPos++;
+                }
+            }
+
+         }
+         catch (IOException e)
+         {
+        	System.out.println("Invalid file name");
+        	System.out.println(e.getMessage());
+         }
+        finally
+        {
+	        scn.close();
+        }
     }
 
     /**
@@ -549,7 +595,6 @@ public class ActiveDataManager {
      */
     //STUB
     public Object[][] searchDataPhrase(List<String> searchedWords){
-        
         return new Object[1][1];
     }
 
