@@ -381,24 +381,25 @@ public class ActiveDataManager {
      *
      * @param fileId An int that indicates the id of the file to have its words removed
      */
-    //STUB
-    // Another attempt on remove words... not finished but getting closer - Jason S.
     private void removeWords(int fileId){
         //Create a temp copy of keys to use in forloop, to prevent errors
         List<String> keyCopies = new ArrayList<>(indexDATA.keySet());
+
         //for each word in indexData
         for (String word: keyCopies) {
             //For each in list for word
-            for(int i: idDATA.keySet()) {
+            for(int i = 0; i < indexDATA.get(word).size(); i++) {
                 //see if word is in fileID
-               if(idDATA.get(i).equals(fileId)) {
+               if(indexDATA.get(word).get(i).equals(fileId)) {
                     //Remove that word instance from list
-                    idDATA.remove(word);
+                    indexDATA.get(word).remove(i);
                 }
-                //if no more word instances in list
+
 
             }
+            //if no more word instances in list
             //remove the word from indexData
+            if(indexDATA.get(word).size()==0)
                 indexDATA.remove(word);
         }
 
@@ -491,55 +492,56 @@ public class ActiveDataManager {
     //STUB
     // First attempt on searchDataOr... more to come - Jason S.
     public Object[][] searchDataOr(Set<String> searchedWords){
-        List<Set> wordsFound = new ArrayList<>();
+        Set<Integer> wordsFound = new HashSet<>();
         //for each searchedWords word
-        for(String listSet: searchedWords) {
+        for(String searchedWord: searchedWords) {
+            //See if word exists in indexData
+            if(indexDATA.containsKey(searchedWord))
             //Find all instances in indexData of that word with for loop
-            for (int i = 0; i < indexDATA.size() - 1; i++) {
-                if (indexDATA.keySet().equals(listSet))
+            for (Integer[] word : indexDATA.get(searchedWord)) {
                     //Save the fileID of found word to a set
-                    wordsFound.add(indexDATA.keySet());
+                    wordsFound.add(word[INDEX_DATA_FILE_ID]);
             }
         }
         //pass set of fileID to buildJtableData
-        return buildJtableData(new HashSet<Integer>(wordsFound));
+        return buildJtableData((wordsFound));
     }
 
     /**
-     * This method will perform a AND search through the index data and return the data
+     * This method will perform an AND search through the index data and return the data
      * @param searchedWords a set of words that contain every word to look for
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    // Attempts continued... not finished - Jason S.
     public Object[][] searchDataAnd(Set<String> searchedWords){
         //Create a list of sets
-        List<Set> wordSets = new ArrayList<>();
+        List<Set> wordSets = new LinkedList<>();
 
-        // for each index
-        for(Set set: wordSets) {
-            //for each searchedWords word
-            for(String word: searchedWords) {
+        //for each searchedWords word
+        for(String searchedWord: searchedWords) {
+            //See if that word exists in indexDATA
+            if(indexDATA.containsKey(searchedWord)) {
+                //Create a NEW set of ints to hold the found fileIDs
+                Set<Integer>wordsFound = new HashSet<>();
                 //Find all instances in indexData of that word with for loop
-                for(int i = 0; i < indexDATA.size() - 1; i++) {
-                    //Save the fileID of found word to a set
-                    //Save the set to the next position on the list of sets
-                    if(indexDATA.containsValue(word))
-                        set = indexDATA.keySet();
-                        wordSets.add(set);
+                for(Integer[] word: indexDATA.get(searchedWord)) {
+                    //Add fileIDs for the words
+                    wordsFound.add(word[INDEX_DATA_FILE_ID]);
+                }
 
+                    //Add set to list of sets
+                        wordSets.add(wordsFound);
                 }
             }
 
-        }
         //for each set in list of sets
-        for(Set set: wordSets) {
+        for(int i=1; i < wordSets.size(); i++) {
             //Intersect sets together
-            wordSets.retainAll(set);
+            wordSets.get(0).retainAll(wordSets.get(1));
 
         }
 
         //pass set of fileID to buildJtableData
-        return buildJtableData(new HashSet<Integer>(wordSets));
+        return buildJtableData(wordSets.get(0));
     }
 
     /**
@@ -549,6 +551,7 @@ public class ActiveDataManager {
      */
     //STUB
     public Object[][] searchDataPhrase(List<String> searchedWords){
+        
         return new Object[1][1];
     }
 
