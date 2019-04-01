@@ -606,6 +606,18 @@ public class ActiveDataManager {
      */
     //STUB
     public Object[][] buildJtableData(Set<Integer> foundFiles){
-        return new Object[1][1];
+
+
+        Object[][] data = new Object[foundFiles.size()][2];
+
+        int i = STARTING_ID;
+
+        for (Integer fileId : foundFiles){
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
+            data[i][ID_DATA_TIMESTAMP] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            i++;
+        }
+
+        return data;
     }
 }
