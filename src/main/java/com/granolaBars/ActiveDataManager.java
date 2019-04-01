@@ -433,21 +433,22 @@ public class ActiveDataManager {
 
         //for each word in indexData
         for (String word: keyCopies) {
-            //Create a temp copy of words list to use in forloop, to prevent errors
-            Iterator<Integer[]> indexDwordsListCopy = indexDATA.get(word).iterator();
+            //Create a iterator for the words list to allow for removing while iterating
+            Iterator<Integer[]> wordListIterator = indexDATA.get(word).iterator();
 
-            //For each in list for word
-            for(int i = 0; indexDwordsListCopy.hasNext(); i++) {
-                //see if word is in fileID
-                if(indexDATA.get(word).get(i).equals(fileId)) {
+            //For each in word instance
+            while(wordListIterator.hasNext()){
+                Integer[] nextWordInstence = wordListIterator.next();
+                //See if the next word instance has the fileId to be removed
+                if(nextWordInstence[INDEX_DATA_FILE_ID] == fileId) {
                     //Remove that word instance from list
-                    indexDATA.get(word).remove(i);
+                    wordListIterator.remove();
                 }
-                //if no more word instances in list
-                //remove the word from indexData
-                if(indexDATA.get(word).size()==0)
-                    indexDATA.remove(word);
             }
+            //if no more word instances in list
+            //remove the word from indexData
+            if(indexDATA.get(word).size()==0)
+                indexDATA.remove(word);
         }
     }
 
