@@ -368,34 +368,46 @@ public class ActiveDataManager {
      * @param fileId An int is the id for the file meta data of the new words
      * @param filePath A String that indicates the path to the file to be added
      */
-    //STUB
-    private HashSet<String> addWords(int fileId, String filePath)
+    private void addWords(int fileId, String filePath)
        {
         String lineOfText;
         String[] linesOfWords;
-        int lineCount = 1;
-        HashSet<String> wordSet = new HashSet<String>(); 
-        File infile = null;
+        File infile;
         Scanner scn = null;
-            
+        int wordPos = 0;
+
         try
         {
+            //Open the file
             infile = new File(filePath);
+            //Place file into a inputSteam
             scn = new Scanner(infile);
-            
-            
+
+            //While file has a line to read
             while (scn.hasNextLine())
             {
+                //Read the line
             	lineOfText = scn.nextLine();
-            	lineOfText.toLowerCase();
+            	//Convert line to all caps to remove cap sensitivity
+            	lineOfText.toUpperCase();
+            	//Split the line into a list of words
             	linesOfWords = lineOfText.split("\\s+");
-
+                //For each word
             	for (String word : linesOfWords)
             	{
-                	if (word.length() > 0)
-                    		wordSet.add(word);
+            	    //See if its a proper word
+                	if (word.length() > 0){
+                        //See if word already exists in indexData
+                        if(!indexDATA.containsKey(word)){
+                            //If not, create the key and the list value, and add it to the map
+                            indexDATA.put(word, new LinkedList<Integer[]>());
+                        }
+                        //Create Integer[] of this words data, and it to indexData
+                        indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                    }
+                	//Increase POS for next word
+                    wordPos++;
                 }
-            	lineCount++;
             }
             
          }
@@ -406,12 +418,8 @@ public class ActiveDataManager {
          }
         finally
         {
-	    scn.close(); 
-            scn = null;
-            infile = null;
+	        scn.close();
         }
-        System.out.println(wordSet.toString());
-	return wordSet;
     }
  
     /*
