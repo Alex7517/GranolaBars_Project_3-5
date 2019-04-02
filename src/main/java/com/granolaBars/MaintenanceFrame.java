@@ -15,8 +15,6 @@ import javax.swing.table.DefaultTableModel;
 public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JLabel MaintenanceFormHeader;
      private JScrollPane maintScrollPane;
-     private JLabel FileNameLabel;
-     private JLabel StatusLabel;
      private JButton AddFileButton;
      private JButton LoadDataButton;
      private JButton RemoveSelectedFilesButton;
@@ -40,20 +38,6 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         MaintenanceFormHeader.setSize(500, 50);
         MaintenanceFormHeader.setFont(new Font("Calibri", Font.BOLD, 30));
         add(MaintenanceFormHeader);
-        
-        // File name label
-        FileNameLabel = new JLabel("File Name");
-        FileNameLabel.setLocation(175, 50);
-        FileNameLabel.setSize(250, 20);
-        FileNameLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
-        add(FileNameLabel);
-        
-        //Status label
-        StatusLabel = new JLabel("Data of last modification");
-        StatusLabel.setLocation(475, 50);
-        StatusLabel.setSize(250, 20);
-        StatusLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
-        add(StatusLabel);
        
         //Add file button
         AddFileButton = new JButton("Add File");
