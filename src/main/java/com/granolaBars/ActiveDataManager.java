@@ -610,8 +610,8 @@ public class ActiveDataManager {
         List<String> searchedWords = prepTextInput(searchedWordsString);
 
         Set<Integer> filesFound = new HashSet<>();
-        //Check that searchedWords is not empty or null
-        if(searchedWords!=null && searchedWords.size()>0){
+        //Check that searchedWords is not empty
+        if(searchedWords.size()>0){
             //if word exists
             if(indexDATA.containsKey(searchedWords.get(0))) {
                 //Find all instances in indexData of the first word
@@ -682,7 +682,13 @@ public class ActiveDataManager {
             i++;
         }
 
-        return data;
+        if (data.length>0)
+            return data;
+        else{
+            data = new Object[1][1];
+            data[0][0] = "No results";
+            return data;
+        }
     }
 
     /**
@@ -692,6 +698,18 @@ public class ActiveDataManager {
      * @return a list of strings, each element is a single word
      */
     private static List<String> prepTextInput(String inputString){
+
+        /* This is what its doing
+        inputString = inputString.toUpperCase();
+        inputString = inputString.replaceAll(WORD_CLEANUP_REG,"");
+        List<String> inputList = Arrays.asList(inputString.split(WORD_SPLIT_REG));
+        return inputList;
+        */
+
+        if(DEBUG_MODE)
+        System.out.println(Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG)));
+
         return Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG));
+
     }
 }

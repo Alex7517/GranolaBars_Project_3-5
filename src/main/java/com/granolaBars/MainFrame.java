@@ -26,7 +26,7 @@ public class MainFrame extends JFrame implements updatableGUI{
     private JTable searchResult;
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
-    private String[] columnsNames = {"File", "Status"};
+    private String[] columnsNames = {"File Name", "Data of last modification"};
 
     public boolean maintenanceFrameOpen = false;
 
@@ -71,7 +71,7 @@ public class MainFrame extends JFrame implements updatableGUI{
         });
 
         // about button
-        aboutButton = new JButton("about");
+        aboutButton = new JButton("About");
         aboutButton.setPreferredSize(buttonDimension);
         aboutButton.addActionListener(new ActionListener() {
             @Override
@@ -81,28 +81,14 @@ public class MainFrame extends JFrame implements updatableGUI{
         });
 
         radioButtonMOr = new JRadioButton("OR");
+        radioButtonMOr.setSelected(true);
         radioButtonMOr.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMOr.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchAll();
-            }
-        });
 
         radioButtonMAnd = new JRadioButton("AND");
         radioButtonMAnd.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMAnd.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchAny();
-            }
-        });
 
         radioButtonMPHRASE = new JRadioButton("PHRASE");
         radioButtonMPHRASE.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMPHRASE.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchExactly();
-            }
-        });
 
         //Add Radio Button Group
         buttonGroup = new ButtonGroup();
@@ -114,7 +100,7 @@ public class MainFrame extends JFrame implements updatableGUI{
         // rows, columns, table and scrollable pane to view search result
         //This DATA is just a stub at this time
         Object[][] data = {
-                {"ReadMe.txt", "Pending"}
+                {"Nothing Searched", "Remember to select a search type"}
         };
 
         searchResult = new JTable(data,columnsNames);
@@ -212,36 +198,20 @@ public class MainFrame extends JFrame implements updatableGUI{
      */
     //STUB
     private void doSearch() {
-        System.out.println(searchButton.getText() + " button pressed");
 
         //Call the correct method for the search selected
         if(radioButtonMOr.isSelected()){
-            System.out.println("OR");
             updateTable(Main.activeDataManager.searchDataOr(searchBarTextField.getText()));
         }
         else if(radioButtonMAnd.isSelected()){
-            System.out.println("And");
             updateTable(Main.activeDataManager.searchDataAnd(searchBarTextField.getText()));
         }
         else if(radioButtonMPHRASE.isSelected()){
-            System.out.println("Phrase");
             updateTable(Main.activeDataManager.searchDataPhrase(searchBarTextField.getText()));
         }
         else{
             System.out.println("Nothing");
         }
-    }
-
-    private void doMatchAll() {
-        System.out.println(radioButtonMOr.getText() + " button pressed");
-    }
-
-    private void doMatchAny() {
-        System.out.println(radioButtonMAnd.getText() + " button pressed");
-    }
-
-    private void doMatchExactly() {
-        System.out.println(radioButtonMPHRASE.getText() + " button pressed");
     }
 
     private void doAbout() {
