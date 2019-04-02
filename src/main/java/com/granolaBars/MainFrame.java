@@ -214,11 +214,7 @@ public class MainFrame extends JFrame implements updatableGUI{
     private void doSearch() {
         System.out.println(searchButton.getText() + " button pressed");
         //Organize the searchButtons text into a list
-        String searchedWordsString = searchBarTextField.getText();
-        //Convert line to all caps to remove cap sensitivity
-        searchedWordsString = searchedWordsString.toUpperCase();
-        //Split the line into a list of words
-        List searchedWordsList = new ArrayList(Arrays.asList(searchedWordsString.split("\\s+")));
+        List searchedWordsList = ActiveDataManager.prepTextInput(searchBarTextField.getText());
 
         System.out.println(searchedWordsList);
 

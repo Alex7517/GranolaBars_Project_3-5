@@ -49,6 +49,8 @@ public class ActiveDataManager {
     final private static int INDEX_DATA_POS = 1;
     final private static int STARTING_ID = 0;
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
+    final private static String WORD_CLEANUP_REG = "[\\W, ?.@]+";
+    final private static String WORD_SPLIT_REG = "[\\W, ?.@]+";
 
     /**
      * This field holds the file meta data used by the object
@@ -371,7 +373,7 @@ public class ActiveDataManager {
     private void addWords(int fileId, String filePath)
        {
         String lineOfText;
-        String[] linesOfWords;
+        List<String> linesOfWords;
         File infile;
         Scanner scn = null;
         int wordPos = 0;
@@ -388,10 +390,8 @@ public class ActiveDataManager {
             {
                 //Read the line
             	lineOfText = scn.nextLine();
-            	//Convert line to all caps to remove cap sensitivity
-                lineOfText = lineOfText.toUpperCase();
-            	//Split the line into a list of words
-            	linesOfWords = lineOfText.split("\\s+");
+            	//Clean up the input
+            	linesOfWords = prepTextInput(lineOfText);
                 //For each word
             	for (String word : linesOfWords)
             	{
@@ -586,7 +586,12 @@ public class ActiveDataManager {
         }
 
         //pass set of fileID to buildJtableData
-        return buildJtableData(wordSets.get(0));
+        if(wordSets.size()>0){
+            return buildJtableData(wordSets.get(0));
+        }
+        else{
+            return buildJtableData(new HashSet<Integer>());
+        }
     }
 
     /**
@@ -616,7 +621,11 @@ public class ActiveDataManager {
     }
 
     /**
-     * This method will use recursion to complete the phrase search
+     * This method is the recursive counterpart for the searchDataPhrase method
+     * This will recursively search up the "tree" of words
+     * ending when it finds a dead end (no valid word)
+     * or a valid word, ending the chain with a valid file ID
+     *
      * @param searchedWords a list of words that contain every word to look for, the order of the list is important
      * @param pos the pos(position) of the potential word to look for
      * @param fileId the fileId of the potential word to look for
@@ -651,8 +660,7 @@ public class ActiveDataManager {
      * @param foundFiles a set of file IDs that need to be added int the return array
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    //STUB
-    public Object[][] buildJtableData(Set<Integer> foundFiles){
+    private Object[][] buildJtableData(Set<Integer> foundFiles){
 
 
         Object[][] data = new Object[foundFiles.size()][2];
@@ -666,5 +674,15 @@ public class ActiveDataManager {
         }
 
         return data;
+    }
+
+    /**
+     * This method will cleanup the text input to insure that all words are properly indexed and searched
+     *
+     * @param inputString the string to be clean and converted into a list of words
+     * @return a list of strings, each element is a single word
+     */
+    public static List<String> prepTextInput(String inputString){
+        return Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG));
     }
 }
