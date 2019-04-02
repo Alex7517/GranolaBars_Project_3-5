@@ -123,17 +123,9 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
     }
 
     private void doAddFile() {
-        JFileChooser FileSelect = new JFileChooser();
-        FileSelect.showOpenDialog(this);
-        File f = FileSelect.getSelectedFile();
-        String tmpPath;
-        try {
-            tmpPath = f.getCanonicalPath();
-        }
-        catch (IOException e){
-            throw new RuntimeException(e);
-        }
-        Main.activeDataManager.addData(tmpPath);
+        String fileToAdd = selectFile();
+        if(fileToAdd != null)
+            Main.activeDataManager.addData(fileToAdd);
     }
 
     private void doRebuild() {
@@ -141,17 +133,24 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
     }
 
     private void doRemoveSelected() {
+        String fileToRemove = selectFile();
+        if(fileToRemove != null)
+            Main.activeDataManager.removeData(fileToRemove);
+    }
+
+    private String selectFile(){
         JFileChooser FileSelect = new JFileChooser();
         FileSelect.showOpenDialog(this);
         File f = FileSelect.getSelectedFile();
-        String tmpPath;
         try {
-            tmpPath = f.getCanonicalPath();
+            return f.getCanonicalPath();
+        }
+        catch (NullPointerException e){
+            return null;
         }
         catch (IOException e){
-            throw new RuntimeException(e);
+            return null;
         }
-        Main.activeDataManager.removeData(tmpPath);
     }
 }
 
