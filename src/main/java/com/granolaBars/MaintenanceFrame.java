@@ -14,12 +14,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JLabel MaintenanceFormHeader;
-     private JPanel northMaintPanel, southMaintPanel;
      private JScrollPane maintScrollPane;
      private JLabel FileNameLabel;
      private JLabel StatusLabel;
      private JButton AddFileButton;
-     private JButton RebuildButton;
+     private JButton LoadDataButton;
      private JButton RemoveSelectedFilesButton;
      private JTable FileInfoTable;
      private String[] columnsNames = {"File Name", "Data of last modification"};
@@ -64,11 +63,11 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         add(AddFileButton);
    
         //Add rebuild button
-        RebuildButton = new JButton("Rebuild Out-Of-Date");
-        RebuildButton.setMnemonic(KeyEvent.VK_O);
-        RebuildButton.setSize(150, 30);
-        RebuildButton.setLocation(250, 390);
-        add(RebuildButton);
+        LoadDataButton = new JButton("Reload Data");
+        LoadDataButton.setMnemonic(KeyEvent.VK_O);
+        LoadDataButton.setSize(150, 30);
+        LoadDataButton.setLocation(250, 390);
+        add(LoadDataButton);
         
         //Add remove selected files button
         RemoveSelectedFilesButton = new JButton("Remove Selected Files");
@@ -105,9 +104,9 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
             }
         });
 
-        RebuildButton.addActionListener(new ActionListener() {
+        LoadDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                doRebuild();
+                doLoadData();
             }
         });
 
@@ -130,9 +129,9 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         if(fileToAdd != null)
             Main.activeDataManager.addData(fileToAdd);
     }
-    //When the rebuild button is pressed
-    private void doRebuild() {
-        System.out.println(RebuildButton.getText() + " button pressed");
+    //When the load data button is pressed
+    private void doLoadData() {
+        Main.activeDataManager.loadData();
     }
     
     //When the remove button is pressed, this opens
