@@ -27,6 +27,11 @@ public class MainFrame extends JFrame{
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
     private String[] columnsNames = {"File Name", "Date of last modification"};
+    private String aboutMessage = "This is the GranolaBars Search Engine. The purpose of this program"
+            + "\nis to let a user upload and remove files from their computers, and allow"
+            + "\nthe user to search through files using a word(s) or phrase. The program "
+            + "\nwill then show the user which file(s) contain the word(s) or phrase entered. "
+            + "\nThe authors are Alex Kuiper, Jason Sheets, Kritsia Figueroa, and Kyle Young.";
 
     public boolean maintenanceFrameOpen = false;
 
@@ -213,6 +218,6 @@ public class MainFrame extends JFrame{
 
     //Shows message box when about button is clicked
     private void doAbout() {
-        JOptionPane.showMessageDialog(this, "GranolaBars Search Engine", "About", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, aboutMessage, "About", JOptionPane.INFORMATION_MESSAGE);
     }
 }
