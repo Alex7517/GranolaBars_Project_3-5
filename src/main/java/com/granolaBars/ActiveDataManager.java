@@ -591,12 +591,59 @@ public class ActiveDataManager {
 
     /**
      * This method will perform a PHRASE search through the index data and return the data
-     * @param searchedWords a list of words that contain every word to look for, the of the list if important
+     * @param searchedWords a list of words that contain every word to look for, the order of the list is important
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    //STUB
     public Object[][] searchDataPhrase(List<String> searchedWords){
-        return new Object[1][1];
+        Set<Integer> filesFound = new HashSet<>();
+        //Check that searchedWords is not empty or null
+        if(searchedWords!=null && searchedWords.size()>0){
+            //if word exists
+            if(indexDATA.containsKey(searchedWords.get(0))) {
+                //Find all instances in indexData of the first word
+                for(Integer[] word: indexDATA.get(searchedWords.get(0))) {
+                    //if only one word
+                    if(searchedWords.size()==1){
+                        filesFound.add(word[INDEX_DATA_FILE_ID]);
+                    }
+                    else{
+                        filesFound.addAll(searchDataPhraseRec(searchedWords.subList(1,searchedWords.size()), word[INDEX_DATA_POS]+1, word[INDEX_DATA_FILE_ID]));
+                    }
+                }
+            }
+        }
+        return buildJtableData(filesFound);
+    }
+
+    /**
+     * This method will perform a PHRASE search through the index data and return the data
+     * @param searchedWords a list of words that contain every word to look for, the order of the list is important
+     * @param pos the pos(position) of the potential word to look for
+     * @param fileId the fileId of the potential word to look for
+     * @return a Set<Integer> that holds the list of files that qualify
+     */
+    private Set<Integer> searchDataPhraseRec(List<String> searchedWords, int pos, int fileId){
+        Set<Integer> filesFound = new HashSet<>();
+        //if word exists
+        if(indexDATA.containsKey(searchedWords.get(0))) {
+            //Find all instances in indexData of the first word
+            for(Integer[] word: indexDATA.get(searchedWords.get(0))) {
+                //If word pos and fileId matches
+                if(word[INDEX_DATA_FILE_ID] == fileId && word[INDEX_DATA_POS] == pos){
+                    //if only one word
+                    if(searchedWords.size()==1){
+                        //Add this word instance to the set
+                        filesFound.add(word[INDEX_DATA_FILE_ID]);
+                    }
+                    else{
+                        //Else check if next word exists
+                        //If anything is return it will be also returned
+                        filesFound.addAll(searchDataPhraseRec(searchedWords.subList(1,searchedWords.size()), pos+1, fileId));
+                    }
+                }
+            }
+        }
+        return filesFound;
     }
 
     /**
