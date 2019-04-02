@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * This class is used to create and manage the main window, which allows the user to search the index and read see the results
  */
-public class MainFrame extends JFrame implements updatableGUI{
+public class MainFrame extends JFrame{
     //MainFrames default settings
     String frameTitle = "The Granola Bar Search Engine";
     int frameWidth = 600;
@@ -206,7 +206,7 @@ public class MainFrame extends JFrame implements updatableGUI{
             updateTable(Main.activeDataManager.searchDataPhrase(searchBarTextField.getText()));
         }
         else{
-            System.out.println("Nothing");
+            System.out.println("Nothing Selected");
         }
     }
 

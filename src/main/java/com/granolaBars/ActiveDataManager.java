@@ -25,7 +25,7 @@ public class ActiveDataManager {
     /**
      * These are simple Strings used for debug output
      */
-    final public static boolean DEBUG_MODE = false;
+    final public static boolean DEBUG_MODE = true;
     final private static String MSG_DATALOADED = "DATA loaded";
     final private static String MSG_MISSING_DATA_FILE = "Could not find data file: ";
     final private static String MSG_CREATING_DATA_FILE = "Creating a empty data file named: ";
@@ -52,6 +52,7 @@ public class ActiveDataManager {
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
     final private static String WORD_CLEANUP_REG = "[^a-zA-Z0-9 ]";
     final private static String WORD_SPLIT_REG = "\\W+";
+    final private static String MSG_NO_SEARCH_RESULTS = "No results";
 
     /**
      * This field holds the file meta data used by the object
@@ -83,12 +84,6 @@ public class ActiveDataManager {
         this.PD_FILE_NAME = PD_FILE_NAME;
         this.displayGUIList = new ArrayList<>();
         loadData();
-        if (verifyDataIntegrity()) {
-            updateAllData();
-        }
-        else{
-            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
-        }
     }
 
     /**
@@ -127,6 +122,12 @@ public class ActiveDataManager {
             //This should never happen, as the data was already casted to this within persistentDataManager.
             if (DEBUG_MODE){System.out.println("***This indicates the data could not be casted properly\n***Let me know how!");}
             throw new RuntimeException(MSG_CORRUPT_DATA+e);
+        }
+        if (verifyDataIntegrity()) {
+            updateAllData();
+        }
+        else{
+            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
         }
     }
 
@@ -411,15 +412,15 @@ public class ActiveDataManager {
                 }
             }
             if(wordPos == 0){
-                if (DEBUG_MODE){System.out.println(filePath+MSG_FILE_EMPTY);}
-                //We may want to MSG the use
+                if (DEBUG_MODE){System.out.println(MSG_FILE_EMPTY+filePath);}
+                //We may want to MSG the user
             }
 
          }
          catch (IOException e)
          {
-        	System.out.println("Invalid file name");
-        	System.out.println(e.getMessage());
+             if (DEBUG_MODE){System.out.println(MSG_CANT_READ_FILE+filePath);}
+             //We may want to MSG the user
          }
         finally
         {
@@ -695,7 +696,7 @@ public class ActiveDataManager {
             return data;
         else{
             data = new Object[1][1];
-            data[0][0] = "No results";
+            data[0][0] = MSG_NO_SEARCH_RESULTS;
             return data;
         }
     }
