@@ -14,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JLabel MaintenanceFormHeader;
+     private JPanel northMaintPanel, southMaintPanel;
+     private JScrollPane maintScrollPane;
      private JLabel FileNameLabel;
      private JLabel StatusLabel;
      private JButton AddFileButton;
@@ -82,11 +84,13 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
 
 
         FileInfoTable = new JTable(data, columnsNames);
-        FileInfoTable.setLocation(15, 70);
-        FileInfoTable.setSize(675, 310);
-        add(FileInfoTable);
         FileInfoTable.setEnabled(false);
-
+        maintScrollPane = new JScrollPane(FileInfoTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        maintScrollPane.setLocation(15, 70);
+        maintScrollPane.setSize(650, 310);
+        add(maintScrollPane);
+        
+        
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
@@ -113,6 +117,7 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
             }
         });
     }
+    
 
     public void updateTable(Object[][] tableData) {
         FileInfoTable.setModel(new DefaultTableModel(tableData, columnsNames));
