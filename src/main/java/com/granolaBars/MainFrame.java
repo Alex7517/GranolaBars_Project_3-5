@@ -213,23 +213,19 @@ public class MainFrame extends JFrame implements updatableGUI{
     //STUB
     private void doSearch() {
         System.out.println(searchButton.getText() + " button pressed");
-        //Organize the searchButtons text into a list
-        List searchedWordsList = ActiveDataManager.prepTextInput(searchBarTextField.getText());
-
-        System.out.println(searchedWordsList);
 
         //Call the correct method for the search selected
         if(radioButtonMOr.isSelected()){
             System.out.println("OR");
-            updateTable(Main.activeDataManager.searchDataOr(new HashSet<String>(searchedWordsList)));
+            updateTable(Main.activeDataManager.searchDataOr(searchBarTextField.getText()));
         }
         else if(radioButtonMAnd.isSelected()){
             System.out.println("And");
-            updateTable(Main.activeDataManager.searchDataAnd(new HashSet<String>(searchedWordsList)));
+            updateTable(Main.activeDataManager.searchDataAnd(searchBarTextField.getText()));
         }
         else if(radioButtonMPHRASE.isSelected()){
             System.out.println("Phrase");
-            updateTable(Main.activeDataManager.searchDataPhrase(searchedWordsList));
+            updateTable(Main.activeDataManager.searchDataPhrase(searchBarTextField.getText()));
         }
         else{
             System.out.println("Nothing");

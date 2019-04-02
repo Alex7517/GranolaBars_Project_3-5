@@ -49,7 +49,7 @@ public class ActiveDataManager {
     final private static int INDEX_DATA_POS = 1;
     final private static int STARTING_ID = 0;
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
-    final private static String WORD_CLEANUP_REG = "[\\W, ?.@]+";
+    final private static String WORD_CLEANUP_REG = "[^a-zA-Z0-9 ]";
     final private static String WORD_SPLIT_REG = "[\\W, ?.@]+";
 
     /**
@@ -533,10 +533,13 @@ public class ActiveDataManager {
 
     /**
      * This method will perform a OR search through the index data and return the data
-     * @param searchedWords a set of words that contain every word to look for
+     * @param searchedWordsString a single string that will be parsed and searched
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    public Object[][] searchDataOr(Set<String> searchedWords){
+    public Object[][] searchDataOr(String searchedWordsString){
+        //Parse the string
+        Set<String> searchedWords = new HashSet<>(prepTextInput(searchedWordsString));
+
         Set<Integer> filesFound = new HashSet<>();
         //for each searchedWords word
         for(String searchedWord: searchedWords) {
@@ -555,10 +558,13 @@ public class ActiveDataManager {
 
     /**
      * This method will perform an AND search through the index data and return the data
-     * @param searchedWords a set of words that contain every word to look for
+     * @param searchedWordsString a single string that will be parsed and searched
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    public Object[][] searchDataAnd(Set<String> searchedWords){
+    public Object[][] searchDataAnd(String searchedWordsString){
+        //Parse the string
+        Set<String> searchedWords = new HashSet<>(prepTextInput(searchedWordsString));
+
         //Create a list of sets
         List<Set> wordSets = new LinkedList<>();
 
@@ -596,10 +602,13 @@ public class ActiveDataManager {
 
     /**
      * This method will perform a PHRASE search through the index data and return the data
-     * @param searchedWords a list of words that contain every word to look for, the order of the list is important
+     * @param searchedWordsString a single string that will be parsed and searched
      * @return a Object[][] that can be easily loaded into a Jtable
      */
-    public Object[][] searchDataPhrase(List<String> searchedWords){
+    public Object[][] searchDataPhrase(String searchedWordsString){
+        //Parse the string
+        List<String> searchedWords = prepTextInput(searchedWordsString);
+
         Set<Integer> filesFound = new HashSet<>();
         //Check that searchedWords is not empty or null
         if(searchedWords!=null && searchedWords.size()>0){
@@ -682,7 +691,7 @@ public class ActiveDataManager {
      * @param inputString the string to be clean and converted into a list of words
      * @return a list of strings, each element is a single word
      */
-    public static List<String> prepTextInput(String inputString){
+    private static List<String> prepTextInput(String inputString){
         return Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG));
     }
 }
