@@ -288,7 +288,9 @@ public class ActiveDataManager {
             else{
                 if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ALREADY_EXISTS);}
                 //If the file already exists then what do we do
-                //Do we ignore it or update it
+                if(displayGUIList.size()>0){
+                    System.out.println(displayGUIList.get(0).showConfirmDialog("NOTHING","File is already in index"));
+                }
             }
         }
         else{
@@ -414,6 +416,7 @@ public class ActiveDataManager {
             if(wordPos == 0){
                 if (DEBUG_MODE){System.out.println(MSG_FILE_EMPTY+filePath);}
                 //We may want to MSG the user
+
             }
 
          }

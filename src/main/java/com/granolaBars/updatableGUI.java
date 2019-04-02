@@ -5,4 +5,6 @@ package com.granolaBars;
  */
 interface updatableGUI {
         void updateTable(Object[][] tableData);
+        void showMessageDialog(final String MSG_TITLE, final String MSG_INFO);
+        Boolean showConfirmDialog(final String MSG_TITLE, final String MSG_INFO);
         }

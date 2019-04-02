@@ -157,5 +157,22 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
             return null;
         }
     }
+
+    public void showMessageDialog(final String MSG_TITLE, final String MSG_INFO){
+        JOptionPane.showMessageDialog(this, MSG_INFO, MSG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public Boolean showConfirmDialog(final String MSG_TITLE, final String MSG_INFO){
+        int userAnswer = JOptionPane.showConfirmDialog(this, MSG_INFO, MSG_TITLE, JOptionPane.YES_NO_OPTION);
+        if (userAnswer == 0){
+            return true;
+        }
+        else if (userAnswer == 1){
+            return false;
+        }
+        else{
+            return false;
+        }
+    }
 }
 
