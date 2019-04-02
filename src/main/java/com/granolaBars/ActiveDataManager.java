@@ -39,6 +39,8 @@ public class ActiveDataManager {
     final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
     final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
     final private static String MSG_FILE_EMPTY = "File is empty or can not be read: ";
+    final private static String MSG_LARGE_WORD_WARNING = "Strangely Large Word found\nShould it be included: ";
+    final private static String MSG_NO_WORDS_FOUND = "File is invalid or empty, to you still want it added?";
 
     /**
      * These are used to make the code easier to read
@@ -53,6 +55,7 @@ public class ActiveDataManager {
     final private static String WORD_CLEANUP_REG = "[^a-zA-Z0-9 ]";
     final private static String WORD_SPLIT_REG = "\\W+";
     final private static String MSG_NO_SEARCH_RESULTS = "No results";
+    final private static int LARGE_WORD_WARNING_SIZE = 100;
 
     /**
      * This field holds the file meta data used by the object
@@ -287,16 +290,16 @@ public class ActiveDataManager {
             }
             else{
                 if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ALREADY_EXISTS);}
-                //If the file already exists then what do we do
                 if(displayGUIList.size()>0){
-                    System.out.println(displayGUIList.get(0).showConfirmDialog("NOTHING","File is already in index"));
+                    displayGUIList.get(0).showMessageDialog("",filePath+MSG_DATA_ALREADY_EXISTS);
                 }
             }
         }
         else{
             if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_DOES_NOT_EXIST);}
-            //If the file does not exist then what do we do
-            //Do we ignore it or throw an error
+            if(displayGUIList.size()>0){
+                displayGUIList.get(0).showMessageDialog("",filePath+MSG_DATA_DOES_NOT_EXIST);
+            }
         }
     }
 
@@ -399,24 +402,29 @@ public class ActiveDataManager {
                 //For each word
             	for (String word : linesOfWords)
             	{
-            	    //See if its a proper word
-                	if (word.length() > 0){
-                        //See if word already exists in indexData
-                        if(!indexDATA.containsKey(word)){
-                            //If not, create the key and the list value, and add it to the map
+                    if(!indexDATA.containsKey(word)){
+                        //If not, see if the word is strange/BIG
+                        if(word.length()<LARGE_WORD_WARNING_SIZE||(displayGUIList.size()>0 && displayGUIList.get(0).showConfirmDialog("",MSG_LARGE_WORD_WARNING+word))){
+                            //create the key and the list value, and add it to the map
                             indexDATA.put(word, new LinkedList<Integer[]>());
+                            indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                            //Increase POS for next word
+                            wordPos++;
                         }
-                        //Create Integer[] of this words data, and it to indexData
-                        indexDATA.get(word).add(new Integer[] {fileId, wordPos});
                     }
-                	//Increase POS for next word
-                    wordPos++;
+                    else{
+                        indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                        wordPos++;
+                    }
                 }
             }
             if(wordPos == 0){
                 if (DEBUG_MODE){System.out.println(MSG_FILE_EMPTY+filePath);}
                 //We may want to MSG the user
-
+                if(displayGUIList.size()>0 && !displayGUIList.get(0).showConfirmDialog("",MSG_NO_WORDS_FOUND)){
+                    //Remove The File if invalid or empty(if you user wants)
+                    removeMeta(fileId);
+                }
             }
 
          }
@@ -424,6 +432,9 @@ public class ActiveDataManager {
          {
              if (DEBUG_MODE){System.out.println(MSG_CANT_READ_FILE+filePath);}
              //We may want to MSG the user
+             if(displayGUIList.size()>0){
+                 displayGUIList.get(0).showMessageDialog("",MSG_CANT_READ_FILE);
+             }
          }
         finally
         {

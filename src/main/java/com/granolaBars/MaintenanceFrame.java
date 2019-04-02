@@ -70,7 +70,7 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         add(LoadDataButton);
         
         //Add remove selected files button
-        RemoveSelectedFilesButton = new JButton("Remove Selected Files");
+        RemoveSelectedFilesButton = new JButton("Remove Files");
         RemoveSelectedFilesButton.setMnemonic(KeyEvent.VK_R);
         RemoveSelectedFilesButton.setSize(175, 30);
         RemoveSelectedFilesButton.setLocation(475, 390);
