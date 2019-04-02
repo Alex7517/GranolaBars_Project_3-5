@@ -19,8 +19,8 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JButton AddFileButton;
      private JButton RebuildButton;
      private JButton RemoveSelectedFilesButton;
-     private JTable FileNameAndStatus;
-     private String[] columnsNames = {"File", "Status"};
+     private JTable FileInfoTable;
+     private String[] columnsNames = {"File Name", "Data of last modification"};
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
@@ -48,7 +48,7 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         add(FileNameLabel);
         
         //Status label
-        StatusLabel = new JLabel("Status");
+        StatusLabel = new JLabel("Data of last modification");
         StatusLabel.setLocation(475, 50);
         StatusLabel.setSize(250, 20);
         StatusLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -76,19 +76,16 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         add(RemoveSelectedFilesButton);
         
         //Table to store data
-
-        String[] columnsNames = {"File", "Status"};
-
         Object[][] data = {
-                {"ReadMe.txt", "Pending"}
+                {"NO", "DATA"}
             };
 
 
-        FileNameAndStatus = new JTable(data, columnsNames);
-        FileNameAndStatus.setLocation(15, 70);
-        FileNameAndStatus.setSize(675, 310);
-        add(FileNameAndStatus);
-        FileNameAndStatus.setEnabled(false);
+        FileInfoTable = new JTable(data, columnsNames);
+        FileInfoTable.setLocation(15, 70);
+        FileInfoTable.setSize(675, 310);
+        add(FileInfoTable);
+        FileInfoTable.setEnabled(false);
 
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
@@ -118,7 +115,7 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
     }
 
     public void updateTable(Object[][] tableData) {
-        FileNameAndStatus.setModel(new DefaultTableModel(tableData, columnsNames));
+        FileInfoTable.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
     //When the add file button is pressed, this opens
