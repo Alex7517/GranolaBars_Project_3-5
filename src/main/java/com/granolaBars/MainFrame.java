@@ -26,7 +26,7 @@ public class MainFrame extends JFrame implements updatableGUI{
     private JTable searchResult;
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
-    private String[] columnsNames = {"File Name", "Data of last modification"};
+    private String[] columnsNames = {"File Name", "Date of last modification"};
 
     public boolean maintenanceFrameOpen = false;
 
