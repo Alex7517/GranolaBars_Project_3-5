@@ -582,7 +582,11 @@ public class ActiveDataManager {
                 //Add set to list of sets
                 wordSets.add(wordsFound);
                 }
+            else{
+                //If Word was not found, give up
+                return buildJtableData(new HashSet<Integer>());
             }
+        }
 
         //for each set in list of sets
         for(int i=1; i < wordSets.size(); i++) {
