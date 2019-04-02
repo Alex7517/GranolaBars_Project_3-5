@@ -98,7 +98,6 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         });
 
         // Adding action listeners for buttons
-
         AddFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doAddFile();
@@ -122,6 +121,8 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         FileNameAndStatus.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
+    //When the add file button is pressed, this opens
+    //the file selector, gets path/data
     private void doAddFile() {
         JFileChooser FileSelect = new JFileChooser();
         FileSelect.showOpenDialog(this);
@@ -135,11 +136,14 @@ public class MaintenanceFrame extends JFrame implements updatableGUI{
         }
         Main.activeDataManager.addData(tmpPath);
     }
-
+    //When the rebuild button is pressed
     private void doRebuild() {
         System.out.println(RebuildButton.getText() + " button pressed");
     }
-
+    
+    //When the remove button is pressed, this opens
+    //the file selector so the use is able to choose
+    //which file needs to be removed
     private void doRemoveSelected() {
         JFileChooser FileSelect = new JFileChooser();
         FileSelect.showOpenDialog(this);
