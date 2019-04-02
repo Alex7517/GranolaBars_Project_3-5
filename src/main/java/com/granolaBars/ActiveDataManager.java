@@ -25,7 +25,7 @@ public class ActiveDataManager {
     /**
      * These are simple Strings used for debug output
      */
-    final public static boolean DEBUG_MODE = true;
+    final public static boolean DEBUG_MODE = false;
     final private static String MSG_DATALOADED = "DATA loaded";
     final private static String MSG_MISSING_DATA_FILE = "Could not find data file: ";
     final private static String MSG_CREATING_DATA_FILE = "Creating a empty data file named: ";
@@ -38,6 +38,7 @@ public class ActiveDataManager {
     final private static String MSG_DATA_ALREADY_EXISTS = " already exists in index";
     final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
     final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
+    final private static String MSG_FILE_EMPTY = "File is empty or can not be read: ";
 
     /**
      * These are used to make the code easier to read
@@ -50,7 +51,7 @@ public class ActiveDataManager {
     final private static int STARTING_ID = 0;
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
     final private static String WORD_CLEANUP_REG = "[^a-zA-Z0-9 ]";
-    final private static String WORD_SPLIT_REG = "[\\W, ?.@]+";
+    final private static String WORD_SPLIT_REG = "\\W+";
 
     /**
      * This field holds the file meta data used by the object
@@ -408,6 +409,10 @@ public class ActiveDataManager {
                 	//Increase POS for next word
                     wordPos++;
                 }
+            }
+            if(wordPos == 0){
+                if (DEBUG_MODE){System.out.println(filePath+MSG_FILE_EMPTY);}
+                //We may want to MSG the use
             }
 
          }
