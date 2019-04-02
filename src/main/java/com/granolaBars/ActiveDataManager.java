@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.io.InvalidObjectException;
 import java.util.*;
 
 /**
@@ -18,7 +17,12 @@ public class ActiveDataManager {
     final public String PD_FILE_NAME;
     final private static String DEFAULT_PD_FILE_NAME = "DATA";
 
-    /*
+    /**
+     * This is a list of updatableGUIs that will be updated when the data is changed
+     */
+    private List<updatableGUI> displayGUIList;
+
+    /**
      * These are simple Strings used for debug output
      */
     final public static boolean DEBUG_MODE = true;
@@ -34,8 +38,11 @@ public class ActiveDataManager {
     final private static String MSG_DATA_ALREADY_EXISTS = " already exists in index";
     final private static String MSG_DATA_DOES_NOT_EXIST = " file does not exist in windows";
     final private static String MSG_FILE_NOT_UTD = "File is not UTD: ";
+    final private static String MSG_FILE_EMPTY = "File is empty or can not be read: ";
+    final private static String MSG_LARGE_WORD_WARNING = "Strangely Large Word found\nShould it be included: ";
+    final private static String MSG_NO_WORDS_FOUND = "File is invalid or empty, to you still want it added?";
 
-    /*
+    /**
      * These are used to make the code easier to read
      */
     final private static int NO_ID = -1;
@@ -45,93 +52,20 @@ public class ActiveDataManager {
     final private static int INDEX_DATA_POS = 1;
     final private static int STARTING_ID = 0;
     final private static String TIMESTAMP_Format ="EEE, dd MMM yyyy HH:mm:ss z";
+    final private static String WORD_CLEANUP_REG = "[^a-zA-Z0-9 ]";
+    final private static String WORD_SPLIT_REG = "\\W+";
+    final private static String MSG_NO_SEARCH_RESULTS = "No results";
+    final private static int LARGE_WORD_WARNING_SIZE = 100;
 
-    /*
+    /**
      * This field holds the file meta data used by the object
      */
     private Map<Integer, String[]> idDATA;
 
-    /*
+    /**
      * This field holds the file index data used by the object
      */
     private Map<String, List<Integer[]>> indexDATA;
-
-
-    //This is example code and will not be used in anyway for the final project
-    static void test(){
-        //This creates a map of example IDs
-        Map<Integer, String[]> i = new Hashtable<>();
-
-        //This finds a path
-        String path;
-        try{
-            path = new java.io.File( "." ).getCanonicalPath();
-
-        }
-        catch (IOException e){
-            path = "Path not found";
-        }
-
-        //This finds the Date --We will likely want to switch to a calender object
-        //Then it saves the path and the date to the String array
-        String[] tempS= {path,new Date().toString()};
-
-        //This adds the String array to the map --Imagine each being a new file and the int to be the ID for each
-        i.put(1,tempS);
-        i.put(2,tempS);
-        i.put(3,tempS);
-
-        //This creates a map of example index
-        Map<String, List<Integer[]>> j = new Hashtable<>();
-
-        //This creates an list that will hold small arrays, each list item will be associated to a specific word,
-                                                            // and each array will hold the words file ID and POS
-        List<Integer[]> temp = new ArrayList<>();
-        Integer[] array1 = {1,22};
-        Integer[] array2 = {3,52};
-
-        temp.add(array1);
-        temp.add(array2);
-
-        //This adds the list to the specific word
-        j.put("BLUE",temp);
-
-        //This calls the method that saves the DATA
-        try{
-            PersistentDataManager.saveData(i,j,DEFAULT_PD_FILE_NAME);
-        }
-        catch (FileNotFoundException e){
-            System.out.println("IDK how, but you found it!");
-        }
-
-        Map[] dataReturn = new Map[2];
-        //This calls for the DATA and separates the DATA
-        try{
-            dataReturn = PersistentDataManager.loadData("DATA");
-        }
-        catch (FileNotFoundException e){
-            System.out.println("Could not find the file named DATA");
-        }
-        catch (IOException e){
-            System.out.println("Could not read the file named DATA");
-        }
-        //ID
-        Map<Integer, String[]> idDATA = dataReturn[0];
-        //Index
-        Map<String, List<Integer[]>> indexDATA = dataReturn[1];
-
-        //This is the path
-        System.out.println(idDATA.get(1)[0]);
-        //This is the date
-        System.out.println(new Date(idDATA.get(1)[1]));
-
-        //This returns the list for a specific word
-        System.out.println(indexDATA.get("BLUE"));
-        //This returns the file Id for the first Blue word
-        System.out.println(indexDATA.get("BLUE").get(0)[0]);
-        //This returns the POS for the first Blue word
-        System.out.println(indexDATA.get("BLUE").get(0)[1]);
-    }
 
 
     /**
@@ -151,13 +85,8 @@ public class ActiveDataManager {
      */
     ActiveDataManager(String PD_FILE_NAME){
         this.PD_FILE_NAME = PD_FILE_NAME;
+        this.displayGUIList = new ArrayList<>();
         loadData();
-        if (verifyDataIntegrity()) {
-            updateAllData();
-        }
-        else{
-            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
-        }
     }
 
     /**
@@ -197,9 +126,15 @@ public class ActiveDataManager {
             if (DEBUG_MODE){System.out.println("***This indicates the data could not be casted properly\n***Let me know how!");}
             throw new RuntimeException(MSG_CORRUPT_DATA+e);
         }
+        if (verifyDataIntegrity()) {
+            updateAllData();
+        }
+        else{
+            throw new RuntimeException(MSG_ERROR_CURRUPT_DATA_STRUCTURE);
+        }
     }
 
-    /*
+    /**
      * A method that will save the objects active data fields,
      * to the persistent data using the PersistentDataManager class
      */
@@ -242,7 +177,7 @@ public class ActiveDataManager {
         updateGUI();
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what updateData(int fileId) says it does
      *
@@ -316,7 +251,6 @@ public class ActiveDataManager {
      * @param filePath A String that indicates what file path is checked
      * @return A int that is the file id associated to the specific path, returns NO_ID(-1) if it does not exist
      */
-    //STUB
     public int getFileId(String filePath) {
 
         for (int fileId: idDATA.keySet())
@@ -339,7 +273,7 @@ public class ActiveDataManager {
         updateGUI();
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what addData(String filePath) says it does
      *
@@ -356,14 +290,16 @@ public class ActiveDataManager {
             }
             else{
                 if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_ALREADY_EXISTS);}
-                //If the file already exists then what do we do
-                //Do we ignore it or update it
+                if(displayGUIList.size()>0){
+                    displayGUIList.get(0).showMessageDialog("",filePath+MSG_DATA_ALREADY_EXISTS);
+                }
             }
         }
         else{
             if (DEBUG_MODE){System.out.println(filePath+MSG_DATA_DOES_NOT_EXIST);}
-            //If the file does not exist then what do we do
-            //Do we ignore it or throw an error
+            if(displayGUIList.size()>0){
+                displayGUIList.get(0).showMessageDialog("",filePath+MSG_DATA_DOES_NOT_EXIST);
+            }
         }
     }
 
@@ -384,7 +320,7 @@ public class ActiveDataManager {
         }
     }
 
-    /*
+    /**
      * This is hidden to protect data, notice the lack of saveDATA();
      * This does what removeData(int fileId) says it does
      *
@@ -399,7 +335,7 @@ public class ActiveDataManager {
         removeMeta(fileId);
     }
 
-    /*
+    /**
      * A method that will add a files meta data to the active idDATA
      *
      * @param filePath A String that indicates the path of the file to be added
@@ -425,7 +361,7 @@ public class ActiveDataManager {
         return newID;
     }
 
-    /*
+    /**
      * A method that will remove a files meta data from the active idDATA
      *
      * @param fileId An int that indicates the id of the file to be removed
@@ -435,25 +371,105 @@ public class ActiveDataManager {
         idDATA.remove(fileId);
     }
 
-    /*
+    /**
      * A method that will add a files words data to the active indexData
      *
      * @param fileId An int is the id for the file meta data of the new words
      * @param filePath A String that indicates the path to the file to be added
      */
-    //STUB
-    private void addWords(int fileId, String filePath){
+    private void addWords(int fileId, String filePath)
+       {
+        String lineOfText;
+        List<String> linesOfWords;
+        File infile;
+        Scanner scn = null;
+        int wordPos = 0;
 
+        try
+        {
+            //Open the file
+            infile = new File(filePath);
+            //Place file into a inputSteam
+            scn = new Scanner(infile);
+
+            //While file has a line to read
+            while (scn.hasNextLine())
+            {
+                //Read the line
+            	lineOfText = scn.nextLine();
+            	//Clean up the input
+            	linesOfWords = prepTextInput(lineOfText);
+                //For each word
+            	for (String word : linesOfWords)
+            	{
+                    if(!indexDATA.containsKey(word)){
+                        //If not, see if the word is strange/BIG
+                        if(word.length()<LARGE_WORD_WARNING_SIZE||(displayGUIList.size()>0 && displayGUIList.get(0).showConfirmDialog("",MSG_LARGE_WORD_WARNING+word))){
+                            //create the key and the list value, and add it to the map
+                            indexDATA.put(word, new LinkedList<Integer[]>());
+                            indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                            //Increase POS for next word
+                            wordPos++;
+                        }
+                    }
+                    else{
+                        indexDATA.get(word).add(new Integer[] {fileId, wordPos});
+                        wordPos++;
+                    }
+                }
+            }
+            if(wordPos == 0){
+                if (DEBUG_MODE){System.out.println(MSG_FILE_EMPTY+filePath);}
+                //We may want to MSG the user
+                if(displayGUIList.size()>0 && !displayGUIList.get(0).showConfirmDialog("",MSG_NO_WORDS_FOUND)){
+                    //Remove The File if invalid or empty(if you user wants)
+                    removeMeta(fileId);
+                }
+            }
+
+         }
+         catch (IOException e)
+         {
+             if (DEBUG_MODE){System.out.println(MSG_CANT_READ_FILE+filePath);}
+             //We may want to MSG the user
+             if(displayGUIList.size()>0){
+                 displayGUIList.get(0).showMessageDialog("",MSG_CANT_READ_FILE);
+             }
+         }
+        finally
+        {
+	        scn.close();
+        }
     }
 
-    /*
+    /**
      * A method that will remove a files words from the active indexData
      *
      * @param fileId An int that indicates the id of the file to have its words removed
      */
-    //STUB
     private void removeWords(int fileId){
+        //Create a temp copy of keys to use in forloop, to prevent errors
+        List<String> keyCopies = new ArrayList<>(indexDATA.keySet());
 
+        //for each word in indexData
+        for (String word: keyCopies) {
+            //Create a iterator for the words list to allow for removing while iterating
+            Iterator<Integer[]> wordListIterator = indexDATA.get(word).iterator();
+
+            //For each in word instance
+            while(wordListIterator.hasNext()){
+                Integer[] nextWordInstence = wordListIterator.next();
+                //See if the next word instance has the fileId to be removed
+                if(nextWordInstence[INDEX_DATA_FILE_ID] == fileId) {
+                    //Remove that word instance from list
+                    wordListIterator.remove();
+                }
+            }
+            //if no more word instances in list
+            //remove the word from indexData
+            if(indexDATA.get(word).size()==0)
+                indexDATA.remove(word);
+        }
     }
 
     /**
@@ -470,10 +486,10 @@ public class ActiveDataManager {
             i++;
         }
 
-        Main.maintenanceFrame.updateTable(data);
-         //Table will not update like this in final product. This
-        // will have to be changed or removed.
-        Main.mainFrame.updateTable(data);
+        for(updatableGUI GUI: displayGUIList)
+        {
+            GUI.updateTable(data);
+        }
     }
 
     /**
@@ -507,5 +523,217 @@ public class ActiveDataManager {
     public String getFileCurrentTimestamp(String filePath){
         SimpleDateFormat timestampFormat = new SimpleDateFormat(TIMESTAMP_Format);
         return timestampFormat.format(new File(filePath).lastModified());
+    }
+
+    /**
+     * This method will add a GUI to the list of updatableGUI that would receive a Object[][] to load into a Jtable
+     * @param displayGUI the updatableGUI object that will be added to the list of GUIs
+     */
+    public void addDisplayGUI(updatableGUI displayGUI) {
+        this.displayGUIList.add(displayGUI);
+        updateGUI();
+    }
+
+    /**
+     * This method will add a list of GUI to the list of updatableGUI that would receive a Object[][] to load into a Jtable
+     * @param displayGUIList a list of updatableGUI objects that will be added to the list of GUIs
+     */
+    public void addDisplayGUI(List<updatableGUI> displayGUIList) {
+        this.displayGUIList.addAll(displayGUIList);
+        updateGUI();
+    }
+
+    /**
+     * This method will remove a GUI to the list of updatableGUI so that it would not receive a Object[][]
+     * @param displayGUI
+     */
+    public void removeDisplayGUI(updatableGUI displayGUI){
+        this.displayGUIList.remove(displayGUI);
+    }
+
+    /**
+     * This method will perform a OR search through the index data and return the data
+     * @param searchedWordsString a single string that will be parsed and searched
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    public Object[][] searchDataOr(String searchedWordsString){
+        //Parse the string
+        Set<String> searchedWords = new HashSet<>(prepTextInput(searchedWordsString));
+
+        Set<Integer> filesFound = new HashSet<>();
+        //for each searchedWords word
+        for(String searchedWord: searchedWords) {
+            //See if word exists in indexData
+            if(indexDATA.containsKey(searchedWord)){
+                //Find all instances in indexData of that word with for loop
+                for (Integer[] wordList : indexDATA.get(searchedWord)) {
+                    //Save the fileID of found word to a set
+                    filesFound.add(wordList[INDEX_DATA_FILE_ID]);
+                }
+            }
+        }
+        //pass set of fileID to buildJtableData
+        return buildJtableData((filesFound));
+    }
+
+    /**
+     * This method will perform an AND search through the index data and return the data
+     * @param searchedWordsString a single string that will be parsed and searched
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    public Object[][] searchDataAnd(String searchedWordsString){
+        //Parse the string
+        Set<String> searchedWords = new HashSet<>(prepTextInput(searchedWordsString));
+
+        //Create a list of sets
+        List<Set> wordSets = new LinkedList<>();
+
+        //for each searchedWords word
+        for(String searchedWord: searchedWords) {
+            //See if that word exists in indexDATA
+            if(indexDATA.containsKey(searchedWord)) {
+                //Create a NEW set of ints to hold the found fileIDs
+                Set<Integer>wordsFound = new HashSet<>();
+                //Find all instances in indexData of that word with for loop
+                for(Integer[] word: indexDATA.get(searchedWord)) {
+                    //Add fileIDs for the words
+                    wordsFound.add(word[INDEX_DATA_FILE_ID]);
+                }
+                //Add set to list of sets
+                wordSets.add(wordsFound);
+                }
+            else{
+                //If Word was not found, give up
+                return buildJtableData(new HashSet<Integer>());
+            }
+        }
+
+        //for each set in list of sets
+        for(int i=1; i < wordSets.size(); i++) {
+            //Intersect sets together
+            wordSets.get(0).retainAll(wordSets.get(i));
+
+        }
+
+        //pass set of fileID to buildJtableData
+        if(wordSets.size()>0){
+            return buildJtableData(wordSets.get(0));
+        }
+        else{
+            return buildJtableData(new HashSet<Integer>());
+        }
+    }
+
+    /**
+     * This method will perform a PHRASE search through the index data and return the data
+     * @param searchedWordsString a single string that will be parsed and searched
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    public Object[][] searchDataPhrase(String searchedWordsString){
+        //Parse the string
+        List<String> searchedWords = prepTextInput(searchedWordsString);
+
+        Set<Integer> filesFound = new HashSet<>();
+        //Check that searchedWords is not empty
+        if(searchedWords.size()>0){
+            //if word exists
+            if(indexDATA.containsKey(searchedWords.get(0))) {
+                //Find all instances in indexData of the first word
+                for(Integer[] word: indexDATA.get(searchedWords.get(0))) {
+                    //if only one word
+                    if(searchedWords.size()==1){
+                        filesFound.add(word[INDEX_DATA_FILE_ID]);
+                    }
+                    else{
+                        filesFound.addAll(searchDataPhraseRec(searchedWords.subList(1,searchedWords.size()), word[INDEX_DATA_POS]+1, word[INDEX_DATA_FILE_ID]));
+                    }
+                }
+            }
+        }
+        return buildJtableData(filesFound);
+    }
+
+    /**
+     * This method is the recursive counterpart for the searchDataPhrase method
+     * This will recursively search up the "tree" of words
+     * ending when it finds a dead end (no valid word)
+     * or a valid word, ending the chain with a valid file ID
+     *
+     * @param searchedWords a list of words that contain every word to look for, the order of the list is important
+     * @param pos the pos(position) of the potential word to look for
+     * @param fileId the fileId of the potential word to look for
+     * @return a Set<Integer> that holds the list of files that qualify
+     */
+    private Set<Integer> searchDataPhraseRec(List<String> searchedWords, int pos, int fileId){
+        Set<Integer> filesFound = new HashSet<>();
+        //if word exists
+        if(indexDATA.containsKey(searchedWords.get(0))) {
+            //Find all instances in indexData of the first word
+            for(Integer[] word: indexDATA.get(searchedWords.get(0))) {
+                //If word pos and fileId matches
+                if(word[INDEX_DATA_FILE_ID] == fileId && word[INDEX_DATA_POS] == pos){
+                    //if only one word
+                    if(searchedWords.size()==1){
+                        //Add this word instance to the set
+                        filesFound.add(word[INDEX_DATA_FILE_ID]);
+                    }
+                    else{
+                        //Else check if next word exists
+                        //If anything is return it will be also returned
+                        filesFound.addAll(searchDataPhraseRec(searchedWords.subList(1,searchedWords.size()), pos+1, fileId));
+                    }
+                }
+            }
+        }
+        return filesFound;
+    }
+
+    /**
+     * This method will create a Object[][] from a Set of file IDs
+     * @param foundFiles a set of file IDs that need to be added int the return array
+     * @return a Object[][] that can be easily loaded into a Jtable
+     */
+    private Object[][] buildJtableData(Set<Integer> foundFiles){
+
+
+        Object[][] data = new Object[foundFiles.size()][2];
+
+        int i = STARTING_ID;
+
+        for (Integer fileId : foundFiles){
+            data[i][ID_DATA_PATH] = idDATA.get(fileId)[ID_DATA_PATH];
+            data[i][ID_DATA_TIMESTAMP] = idDATA.get(fileId)[ID_DATA_TIMESTAMP];
+            i++;
+        }
+
+        if (data.length>0)
+            return data;
+        else{
+            data = new Object[1][1];
+            data[0][0] = MSG_NO_SEARCH_RESULTS;
+            return data;
+        }
+    }
+
+    /**
+     * This method will cleanup the text input to insure that all words are properly indexed and searched
+     *
+     * @param inputString the string to be clean and converted into a list of words
+     * @return a list of strings, each element is a single word
+     */
+    private static List<String> prepTextInput(String inputString){
+
+        /* This is what its doing
+        inputString = inputString.toUpperCase();
+        inputString = inputString.replaceAll(WORD_CLEANUP_REG,"");
+        List<String> inputList = Arrays.asList(inputString.split(WORD_SPLIT_REG));
+        return inputList;
+        */
+
+        if(DEBUG_MODE)
+        System.out.println(Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG)));
+
+        return Arrays.asList(inputString.toUpperCase().replaceAll(WORD_CLEANUP_REG,"").split(WORD_SPLIT_REG));
+
     }
 }

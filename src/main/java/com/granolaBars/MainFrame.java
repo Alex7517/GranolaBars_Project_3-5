@@ -5,23 +5,28 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
-public class MainFrame extends JFrame {
+/**
+ * This class is used to create and manage the main window, which allows the user to search the index and read see the results
+ */
+public class MainFrame extends JFrame{
     //MainFrames default settings
     String frameTitle = "The Granola Bar Search Engine";
     int frameWidth = 600;
     int frameHeight = 840;
     Dimension dime = new Dimension (frameWidth, frameHeight);
 
-    private JPanel panel, panel2;
+    private JPanel northPanel, southPanel;
     private JLabel label;
     private JButton searchButton, maintenanceButton, aboutButton;
-    private JRadioButton radioButtonMAll, radioButtonMAny, radioButtonMExactly;
+    private JRadioButton radioButtonMOr, radioButtonMAnd, radioButtonMPHRASE ;
     private JTextField  searchBarTextField;
     private JTable searchResult;
     private JScrollPane searchScrollPane;
     private ButtonGroup buttonGroup;
-    private String[] columnsNames = {"File", "Status"};
+    private String[] columnsNames = {"File Name", "Date of last modification"};
 
     public boolean maintenanceFrameOpen = false;
 
@@ -37,17 +42,17 @@ public class MainFrame extends JFrame {
         //Creating a textField for the search bar
         searchBarTextField = new JTextField (16);
 
-        // panel dimensions for NORTH panel (Everything for the search)
-        panel = new JPanel();
+        //Panel dimensions for NORTH panel (Everything for the search)
+        northPanel = new JPanel();
         Dimension panelDimension = new Dimension(frameWidth, 200);
-        panel.setPreferredSize(panelDimension);
+        northPanel.setPreferredSize(panelDimension);
 
-        // panel dimensions for SOUTH panel which contains the search results
-        panel2 = new JPanel();
+        //Panel dimensions for SOUTH panel which contains the search results
+        southPanel = new JPanel();
         Dimension panelDimension2 = new Dimension(frameWidth, 600);
-        panel2.setPreferredSize(panelDimension2);
+        southPanel.setPreferredSize(panelDimension2);
 
-        // label for name creation and size set
+        //Label for name creation and size settings
         label = new JLabel("Search Engine");
         label.setFont(new Font("Calibri", Font.BOLD, 23));
         Dimension labelDimension = new Dimension(150,30);
@@ -55,7 +60,7 @@ public class MainFrame extends JFrame {
         label.setHorizontalTextPosition(SwingConstants.LEFT);
 
 
-        // search button creation and size
+        //Search button creation and size settings
         searchButton = new JButton("search");
         Dimension buttonDimension = new Dimension(120,30);
         searchButton.setPreferredSize(buttonDimension);
@@ -65,8 +70,8 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // about button
-        aboutButton = new JButton("about");
+        //About button
+        aboutButton = new JButton("About");
         aboutButton.setPreferredSize(buttonDimension);
         aboutButton.addActionListener(new ActionListener() {
             @Override
@@ -75,49 +80,37 @@ public class MainFrame extends JFrame {
             }
         });
 
-        radioButtonMAll = new JRadioButton("match all");
-        radioButtonMAll.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMAll.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchAll();
-            }
-        });
+        //Or radio button
+        radioButtonMOr = new JRadioButton("OR");
+        radioButtonMOr.setSelected(true);
+        radioButtonMOr.setFont(new Font("Calibri", Font.BOLD, 14));
 
-        radioButtonMAny = new JRadioButton("match any");
-        radioButtonMAny.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMAny.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchAny();
-            }
-        });
-
-        radioButtonMExactly = new JRadioButton("match exactly");
-        radioButtonMExactly.setFont(new Font("Calibri", Font.BOLD, 14));
-        radioButtonMExactly.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                doMatchExactly();
-            }
-        });
+        // And radio button
+        radioButtonMAnd = new JRadioButton("AND");
+        radioButtonMAnd.setFont(new Font("Calibri", Font.BOLD, 14));
+      
+        //Phrase radio button
+        radioButtonMPHRASE = new JRadioButton("PHRASE");
+        radioButtonMPHRASE.setFont(new Font("Calibri", Font.BOLD, 14));
 
         //Add Radio Button Group
         buttonGroup = new ButtonGroup();
-        buttonGroup.add(radioButtonMAll);
-        buttonGroup.add(radioButtonMAny);
-        buttonGroup.add(radioButtonMExactly);
+        buttonGroup.add(radioButtonMOr);
+        buttonGroup.add(radioButtonMAnd);
+        buttonGroup.add(radioButtonMPHRASE);
 
 
-        // rows, columns, table and scrollable pane to view search result
-        //This DATA is just a stub at this time
+        //Rows, columns, table and scrollable pane to view search result
         Object[][] data = {
-                {"ReadMe.txt", "Pending"}
+                {"Nothing Searched", "Remember to select a search type"}
         };
 
-        searchResult = new JTable(data,columnsNames);
+        searchResult = new JTable(data,columnsNames);      
         searchScrollPane = new JScrollPane(searchResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         searchScrollPane.setPreferredSize(new Dimension(550,450));
-        //searchResult.pack(searchScrollPane);
+        searchResult.setEnabled(false);
 
-        // button, button size and button clicked event
+        //Maintenance button, button size, and action listener
         maintenanceButton = new JButton("Maintenance");
         maintenanceButton.setPreferredSize(buttonDimension);
         maintenanceButton.addActionListener(new ActionListener() {
@@ -130,59 +123,59 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // this panel contains the customizable search options,
+        //This panel contains the customizable search options,
         // search field, search button and header in the
         // GridBagLayout
-        add(panel, BorderLayout.NORTH);
-        panel.setLayout(new GridBagLayout());
+        add(northPanel, BorderLayout.NORTH);
+        northPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(label, gbc);
+        northPanel.add(label, gbc);
 
-        // search bar location in the layout
+        //Search bar location in the layout
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(searchBarTextField, gbc);
+        northPanel.add(searchBarTextField, gbc);
 
-        // about button in the layout
+        //About button in the layout
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(aboutButton, gbc);
+        northPanel.add(aboutButton, gbc);
 
-        // search button in the layout
+        //Search button in the layout
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(searchButton, gbc);
+        northPanel.add(searchButton, gbc);
 
-        // radio buttons in the layout
+        //Radio buttons in the layout
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(radioButtonMAll, gbc);
+        northPanel.add(radioButtonMOr, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(radioButtonMAny, gbc);
+        northPanel.add(radioButtonMAnd, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        panel.add(radioButtonMExactly, gbc);
+        northPanel.add(radioButtonMPHRASE, gbc);
 
         // This panel contains the search results, scroll pane and maintenance button
-        add(panel2,BorderLayout.SOUTH);
-        panel2.setLayout(new GridBagLayout());
+        add(southPanel,BorderLayout.SOUTH);
+        southPanel.setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         gc.gridx = 1;
         gc.gridy = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.insets = new Insets(15,15,15,15);
-        panel2.add(maintenanceButton, gc);
+        southPanel.add(maintenanceButton, gc);
         gc.weightx = 1;
         gc.weighty = 1;
         gc.gridx = 0;
@@ -191,33 +184,34 @@ public class MainFrame extends JFrame {
         gc.fill = GridBagConstraints.BOTH;
         gc.gridwidth = 3;
         gc.insets = new Insets(0,20,0,20);
-        panel2.add(searchScrollPane, gc);
+        southPanel.add(searchScrollPane, gc);
 
-
-        // Need to make an about tab & page
     }
-        //Table will not update like this in final product. This
-        // will have to be changed or removed.
-    void updateTable(Object[][] data) {
-        searchResult.setModel(new DefaultTableModel(data, columnsNames));
+    public void updateTable(Object[][] tableData) {
+        searchResult.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
+    /**
+     * This method will manage calling the appropriate search method and update the table
+     */
     private void doSearch() {
-        System.out.println(searchButton.getText() + " button pressed");
+
+        //Call the correct method for the search selected
+        if(radioButtonMOr.isSelected()){
+            updateTable(Main.activeDataManager.searchDataOr(searchBarTextField.getText()));
+        }
+        else if(radioButtonMAnd.isSelected()){
+            updateTable(Main.activeDataManager.searchDataAnd(searchBarTextField.getText()));
+        }
+        else if(radioButtonMPHRASE.isSelected()){
+            updateTable(Main.activeDataManager.searchDataPhrase(searchBarTextField.getText()));
+        }
+        else{
+            System.out.println("Nothing Selected");
+        }
     }
 
-    private void doMatchAll() {
-        System.out.println(radioButtonMAll.getText() + " button pressed");
-    }
-
-    private void doMatchAny() {
-        System.out.println(radioButtonMAny.getText() + " button pressed");
-    }
-
-    private void doMatchExactly() {
-        System.out.println(radioButtonMExactly.getText() + " button pressed");
-    }
-
+    //Shows message box when about button is clicked
     private void doAbout() {
         JOptionPane.showMessageDialog(this, "GranolaBars Search Engine", "About", JOptionPane.INFORMATION_MESSAGE);
     }

@@ -9,6 +9,7 @@ public class Main {
         mainFrame = new MainFrame();
         maintenanceFrame = new MaintenanceFrame();
         activeDataManager = new ActiveDataManager();
+        activeDataManager.addDisplayGUI(maintenanceFrame);
         mainFrame.setVisible(true);
     }
 }

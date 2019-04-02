@@ -9,17 +9,19 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 
-public class MaintenanceFrame extends JFrame{
+/**
+ * This class is used to create and manage the maintenance window, which allows the user to add and remove index DATA.
+ */
+public class MaintenanceFrame extends JFrame implements updatableGUI{
      private JLabel MaintenanceFormHeader;
+     private JScrollPane maintScrollPane;
      private JLabel FileNameLabel;
      private JLabel StatusLabel;
      private JButton AddFileButton;
-     private JButton RebuildButton;
+     private JButton LoadDataButton;
      private JButton RemoveSelectedFilesButton;
-     private JButton ResetWindowsButton;
-     private JTable FileNameAndStatus;
-     private String[] columnsNames = {"File", "Status"};
-     private DefaultTableModel tableModel;
+     private JTable FileInfoTable;
+     private String[] columnsNames = {"File Name", "Data of last modification"};
      
     String frameTitle = "Search Engine Maintenance";
     int frameWidth = 700, frameHeight = 500;
@@ -47,7 +49,7 @@ public class MaintenanceFrame extends JFrame{
         add(FileNameLabel);
         
         //Status label
-        StatusLabel = new JLabel("Status");
+        StatusLabel = new JLabel("Data of last modification");
         StatusLabel.setLocation(475, 50);
         StatusLabel.setSize(250, 20);
         StatusLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -61,34 +63,33 @@ public class MaintenanceFrame extends JFrame{
         add(AddFileButton);
    
         //Add rebuild button
-        RebuildButton = new JButton("Rebuild Out-Of-Date");
-        RebuildButton.setMnemonic(KeyEvent.VK_O);
-        RebuildButton.setSize(150, 30);
-        RebuildButton.setLocation(250, 390);
-        add(RebuildButton);
+        LoadDataButton = new JButton("Reload Data");
+        LoadDataButton.setMnemonic(KeyEvent.VK_O);
+        LoadDataButton.setSize(150, 30);
+        LoadDataButton.setLocation(250, 390);
+        add(LoadDataButton);
         
         //Add remove selected files button
-        RemoveSelectedFilesButton = new JButton("Remove Selected Files");
+        RemoveSelectedFilesButton = new JButton("Remove Files");
         RemoveSelectedFilesButton.setMnemonic(KeyEvent.VK_R);
         RemoveSelectedFilesButton.setSize(175, 30);
         RemoveSelectedFilesButton.setLocation(475, 390);
         add(RemoveSelectedFilesButton);
         
         //Table to store data
-
-        String[] columnsNames = {"File", "Status"};
-
         Object[][] data = {
-                {"ReadMe.txt", "Pending"}
+                {"NO", "DATA"}
             };
 
 
-        FileNameAndStatus = new JTable(data, columnsNames);
-        FileNameAndStatus.setLocation(15, 70);
-        FileNameAndStatus.setSize(675, 310);
-        add(FileNameAndStatus);
-        FileNameAndStatus.setEnabled(false);
-
+        FileInfoTable = new JTable(data, columnsNames);
+        FileInfoTable.setEnabled(false);
+        maintScrollPane = new JScrollPane(FileInfoTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        maintScrollPane.setLocation(15, 70);
+        maintScrollPane.setSize(650, 310);
+        add(maintScrollPane);
+        
+        
         //Add a WindowListener to manage closing the frame
         addWindowListener(new java.awt.event.WindowAdapter(){
             public void windowClosing(java.awt.event.WindowEvent winEvt) {
@@ -97,16 +98,15 @@ public class MaintenanceFrame extends JFrame{
         });
 
         // Adding action listeners for buttons
-
         AddFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 doAddFile();
             }
         });
 
-        RebuildButton.addActionListener(new ActionListener() {
+        LoadDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                doRebuild();
+                doLoadData();
             }
         });
 
@@ -116,45 +116,63 @@ public class MaintenanceFrame extends JFrame{
             }
         });
     }
+    
 
-    void updateTable(Object[][] data) {
-        FileNameAndStatus.setModel(new DefaultTableModel(data, columnsNames));
+    public void updateTable(Object[][] tableData) {
+        FileInfoTable.setModel(new DefaultTableModel(tableData, columnsNames));
     }
 
+    //When the add file button is pressed, this opens
+    //the file selector, gets path/data
     private void doAddFile() {
-        JFileChooser FileSelect = new JFileChooser();
-        FileSelect.showOpenDialog(this);
-        File f = FileSelect.getSelectedFile();
-        String tmpPath;
-        try {
-            tmpPath = f.getCanonicalPath();
-        }
-        catch (IOException e){
-            throw new RuntimeException(e);
-        }
-        Main.activeDataManager.addData(tmpPath);
+        String fileToAdd = selectFile();
+        if(fileToAdd != null)
+            Main.activeDataManager.addData(fileToAdd);
     }
-
-    private void doRebuild() {
-        System.out.println(RebuildButton.getText() + " button pressed");
+    //When the load data button is pressed
+    private void doLoadData() {
+        Main.activeDataManager.loadData();
     }
-
+    
+    //When the remove button is pressed, this opens
+    //the file selector so the use is able to choose
+    //which file needs to be removed
     private void doRemoveSelected() {
+        String fileToRemove = selectFile();
+        if(fileToRemove != null)
+            Main.activeDataManager.removeData(fileToRemove);
+    }
+
+    private String selectFile(){
         JFileChooser FileSelect = new JFileChooser();
         FileSelect.showOpenDialog(this);
         File f = FileSelect.getSelectedFile();
-        String tmpPath;
         try {
-            tmpPath = f.getCanonicalPath();
+            return f.getCanonicalPath();
+        }
+        catch (NullPointerException e){
+            return null;
         }
         catch (IOException e){
-            throw new RuntimeException(e);
+            return null;
         }
-        Main.activeDataManager.removeData(tmpPath);
     }
 
-    private void doReset() {
-        System.out.println(ResetWindowsButton.getText() + " button pressed");
+    public void showMessageDialog(final String MSG_TITLE, final String MSG_INFO){
+        JOptionPane.showMessageDialog(this, MSG_INFO, MSG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public Boolean showConfirmDialog(final String MSG_TITLE, final String MSG_INFO){
+        int userAnswer = JOptionPane.showConfirmDialog(this, MSG_INFO, MSG_TITLE, JOptionPane.YES_NO_OPTION);
+        if (userAnswer == 0){
+            return true;
+        }
+        else if (userAnswer == 1){
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 }
 
