@@ -616,7 +616,7 @@ public class ActiveDataManager {
     }
 
     /**
-     * This method will perform a PHRASE search through the index data and return the data
+     * This method will use recursion to complete the phrase search
      * @param searchedWords a list of words that contain every word to look for, the order of the list is important
      * @param pos the pos(position) of the potential word to look for
      * @param fileId the fileId of the potential word to look for
