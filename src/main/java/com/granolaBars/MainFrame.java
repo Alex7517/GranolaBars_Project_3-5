@@ -105,9 +105,10 @@ public class MainFrame extends JFrame implements updatableGUI{
                 {"Nothing Searched", "Remember to select a search type"}
         };
 
-        searchResult = new JTable(data,columnsNames);
+        searchResult = new JTable(data,columnsNames);      
         searchScrollPane = new JScrollPane(searchResult, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         searchScrollPane.setPreferredSize(new Dimension(550,450));
+        searchResult.setEnabled(false);
 
         //Maintenance button, button size, and action listener
         maintenanceButton = new JButton("Maintenance");
